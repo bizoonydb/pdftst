@@ -1,2908 +1,562 @@
-/* Direitos autorais 2014 Fundação Mozilla
- *
- * Licenciado sob a Licença Apache, Versão 2.0 (a "Licença");
- * você não pode usar este arquivo exceto em conformidade com a Licença.
- * Você pode obter uma cópia da Licença em
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * A menos que exigido pela lei aplicável ou acordado por escrito, o software
- * distribuído sob a Licença é distribuído "COMO ESTÁ",
- * SEM GARANTIAS OU CONDIÇÕES DE QUALQUER TIPO, expressas ou implícitas.
- * Consulte a Licença para o idioma específico que rege as permissões e
- * limitações sob a Licença.
- */
-/*cor de resaltador*/
-:raiz {
-  --destaque-cor-de-fundo: rgba(180, 0, 170, 1);
-  --destaque-cor-de-fundo-selecionada: rgb(0, 0, 255);
-}
-
-@media screen e (forced-colors: ativo) {
-  :raiz {
-    --highlight-bg-color: Realçar;
-    --highlight-selected-bg-color: Texto do botão;
-  }
-}
-
-.camada de texto {
-  posição: absoluta;
-  alinhamento de texto: inicial;
-  inserção: 0;
-  estouro: oculto;
-  opacidade: 0,25;
-  altura da linha: 1;
-  -webkit-text-size-adjust: nenhum;
-     -moz-text-size-adjust: nenhum;
-          ajuste-de-tamanho-do-texto: nenhum;
-  ajuste de cor forçado: nenhum;
-  transformar-origem: 0 0;
-  índice z: 2;
-}
-
-.textLayer :is(span, br) {
-  cor: transparente;
-  posição: absoluta;
-  espaço em branco: pre;
-  cursor: texto;
-  transformar-origem: 0% 0%;
-}
-
-/* Necessário somente no Google Chrome, veja o problema 14205 e, infelizmente,
- * o problema não aparece em testes de referência de "texto". */
-.textLayer span.markedContent {
-  topo: 0;
-  altura: 0;
-}
-
-.textLayer .destaque {
-  margem: -1px;
-  preenchimento: 1px;
-  cor de fundo: var(--highlight-bg-color);
-  raio da borda: 5px;
-}
-
-.textLayer .destaque.acrescentado {
-  posição: inicial;
-}
-
-.textLayer .destaque.início {
-  raio da borda: 4px 0 0 4px;
-}
-
-.textLayer .destaque.fim {
-  raio da borda: 0 4px 4px 0;
-}
-
-.textLayer .destaque.meio {
-  raio da borda: 0;
-}
-
-.textLayer .destaque.selecionado {
-  cor de fundo: var(--destaque-cor-de-fundo-selecionada);
-}
-
-.textLayer ::-moz-seleção {
-  fundo: azul;
-  fundo: AccentColor;
-}
-
-.textLayer ::seleção {
-  fundo: azul;
-  fundo: AccentColor;
-}
-
-/* Evita https://github.com/mozilla/pdf.js/issues/13840 no Chrome */
-.textLayer br::-moz-seleção {
-  fundo: transparente;
-}
-.textLayer br::seleção {
-  fundo: transparente;
-}
-
-.textLayer .fimDoConteúdo {
-  exibir: bloco;
-  posição: absoluta;
-  inserção: 100% 0 0;
-  índice z: -1;
-  cursor: padrão;
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-}
-
-.textLayer .fimDoConteúdo.ativo {
-  topo: 0;
-}
-
-
-:raiz {
-  --annotation-unfocused-field-background: url("dados:imagem/svg+xml;charset=UTF-8,<svg width='1px' height='1px' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' style='preenchimento:rgba(0, 54, 255, 0,13);'/></svg>");
-  --input-focus-border-color: Realçar;
-  --input-focus-outline: tela sólida de 1px;
-  --input-unfocused-border-color: transparente;
-  --input-disabled-border-color: transparente;
-  --input-hover-border-color: preto;
-  --link-outline: nenhum;
-}
-
-@media screen e (forced-colors: ativo) {
-  :raiz {
-    --input-focus-border-color: TextoDaTela;
-    --input-unfocused-border-color: Texto Ativo;
-    --input-disabled-border-color: TextoCinza;
-    --input-hover-border-color: Realçar;
-    --link-outline: LinkText sólido de 1,5 px;
-    --hcm-highligh-filter: inverter(100%);
-  }
-  .annotationLayer .textWidgetAnnotation :is(input, textarea):obrigatório,
-  .annotationLayer .choiceWidgetAnnotation selecionar:obrigatório,
-  .camada de anotação
-    .buttonWidgetAnnotation:é(.checkBox, .radioButton)
-    entrada:obrigatório {
-    contorno: 1,5px sólido selectedItem;
-  }
-
-  .annotationLayer .linkAnotação:hover {
-    -webkit-backdrop-filter: var(--hcm-highligh-filter);
-            filtro de pano de fundo: var(-hcm-highligh-filter);
-  }
-
-  .annotationLayer .linkAnnotation > a:hover {
-    opacidade: 0 !importante;
-    fundo: nenhum !importante;
-    box-shadow: nenhum;
-  }
-
-  .annotationLayer .popupAnotação .popup {
-    esboço: calc(1.5px * var(--scale-factor)) sólido CanvasText !importante;
-    cor de fundo: ButtonFace !importante;
-    cor: ButtonText !importante;
-  }
-
-  .annotationLayer .highlightArea:hover::after {
-    posição: absoluta;
-    topo: 0;
-    esquerda: 0;
-    largura: 100%;
-    altura: 100%;
-    -webkit-backdrop-filter: var(--hcm-highligh-filter);
-            filtro de pano de fundo: var(-hcm-highligh-filter);
-    contente: "";
-    eventos-ponteiro: nenhum;
-  }
-
-  .annotationLayer .popupAnnotation.focused .popup {
-    esboço: calc(3px * var(--scale-factor)) sólido Destaque !importante;
-  }
-}
-
-.annotationLayer {
-  posição: absoluta;
-  topo: 0;
-  esquerda: 0;
-  eventos-ponteiro: nenhum;
-  transformar-origem: 0 0;
-  índice z: 3;
-}
-
-.annotationLayer[rotação-principal-de-dados="90"] .norotate {
-  transformar: girar(270 graus) traduzirX(-100%);
-}
-.annotationLayer[rotação-principal-de-dados="180"] .norotate {
-  transformar: girar(180 graus) traduzir(-100%, -100%);
-}
-.annotationLayer[rotação-principal-de-dados="270"] .norotate {
-  transformar: girar(90 graus) traduzirY(-100%);
-}
-
-.annotationLayer tela {
-  posição: absoluta;
-  largura: 100%;
-  altura: 100%;
-  eventos-ponteiro: nenhum;
-}
-
-.seção annotationLayer {
-  posição: absoluta;
-  alinhamento de texto: inicial;
-  eventos-ponteiro: auto;
-  dimensionamento de caixa: caixa de borda;
-  transformar-origem: 0 0;
-}
-
-.annotationLayer .linkAnotação {
-  esboço: var(--link-outline);
-}
-
-.annotationLayer :is(.linkAnnotation, .buttonWidgetAnnotation.pushButton) > a {
-  posição: absoluta;
-  tamanho da fonte: 1em;
-  topo: 0;
-  esquerda: 0;
-  largura: 100%;
-  altura: 100%;
-}
-
-.camada de anotação
-  :is(.linkAnnotation, .buttonWidgetAnnotation.pushButton):não(.hasBorder)
-  > a:passe o mouse {
-  opacidade: 0,2;
-  cor de fundo: rgba(255, 255, 0, 1);
-  caixa-sombra: 0 2px 10px rgba(255, 255, 0, 1);
-}
-
-.annotationLayer .linkAnnotation.hasBorder:hover {
-  cor de fundo: rgba(255, 255, 0, 0.2);
-}
-
-.annotationLayer .hasBorder {
-  tamanho do plano de fundo: 100% 100%;
-}
-
-.annotationLayer .textAnnotation img {
-  posição: absoluta;
-  cursor: ponteiro;
-  largura: 100%;
-  altura: 100%;
-  topo: 0;
-  esquerda: 0;
-}
-
-.annotationLayer .textWidgetAnnotation :is(entrada, área de texto),
-.annotationLayer .choiceWidgetAnnotation selecionar,
-.annotationLayer .buttonWidgetAnnotation:is(.checkBox, .radioButton) entrada {
-  imagem de fundo: var(--anotação-campo-sem-foco-fundo);
-  borda: sólido de 2px var(--input-unfocused-border-color);
-  dimensionamento de caixa: caixa de borda;
-  fonte: calc(9px * var(-fator de escala)) sans-serif;
-  altura: 100%;
-  margem: 0;
-  alinhamento vertical: topo;
-  largura: 100%;
-}
-
-.annotationLayer .textWidgetAnnotation :is(input, textarea):obrigatório,
-.annotationLayer .choiceWidgetAnnotation selecionar:obrigatório,
-.camada de anotação
-  .buttonWidgetAnnotation:é(.checkBox, .radioButton)
-  entrada:obrigatório {
-  contorno: 1,5px vermelho sólido;
-}
-
-.annotationLayer .choiceWidgetAnnotation selecionar opção {
-  preenchimento: 0;
-}
-
-.annotationLayer .buttonWidgetAnnotation.radioButton entrada {
-  raio da borda: 50%;
-}
-
-.annotationLayer .textWidgetAnnotation textarea {
-  redimensionar: nenhum;
-}
-
-.annotationLayer .textWidgetAnnotation :is(input, textarea)[desabilitado],
-.annotationLayer .choiceWidgetAnnotation select[desativado],
-.camada de anotação
-  .buttonWidgetAnnotation:é(.checkBox, .radioButton)
-  entrada[desabilitado] {
-  antecedentes: nenhum;
-  borda: sólido de 2px var(--input-disabled-border-color);
-  cursor: não permitido;
-}
-
-.annotationLayer .textWidgetAnnotation :is(entrada, área de texto):hover,
-.annotationLayer .choiceWidgetAnnotation selecionar: pairar,
-.camada de anotação
-  .buttonWidgetAnnotation:é(.checkBox, .radioButton)
-  entrada: pairar {
-  borda: sólido de 2px var(--input-hover-border-color);
-}
-.annotationLayer .textWidgetAnnotation :is(entrada, área de texto):hover,
-.annotationLayer .choiceWidgetAnnotation selecionar: pairar,
-.annotationLayer .buttonWidgetAnnotation.checkBox entrada:hover {
-  raio da borda: 2px;
-}
-
-.annotationLayer .textWidgetAnnotation :is(entrada, área de texto):foco,
-.annotationLayer .choiceWidgetAnnotation selecionar:foco {
-  antecedentes: nenhum;
-  borda: sólido 2px var(--input-focus-border-color);
-  raio da borda: 2px;
-  esboço: var(--input-focus-outline);
-}
-
-.annotationLayer .buttonWidgetAnnotation:is(.checkBox, .radioButton) :foco {
-  imagem de fundo: nenhuma;
-  cor de fundo: transparente;
-}
-
-.annotationLayer .buttonWidgetAnnotation.checkBox :foco {
-  borda: sólido 2px var(--input-focus-border-color);
-  raio da borda: 2px;
-  esboço: var(--input-focus-outline);
-}
-
-.annotationLayer .buttonWidgetAnnotation.radioButton :foco {
-  borda: sólido 2px var(--input-focus-border-color);
-  esboço: var(--input-focus-outline);
-}
-
-.annotationLayer .buttonWidgetAnnotation.checkBox entrada:verificado::antes,
-.annotationLayer .buttonWidgetAnnotation.checkBox entrada:verificado::depois,
-.annotationLayer .buttonWidgetAnnotation.radioButton entrada:verificado::antes {
-  cor de fundo: CanvasText;
-  contente: "";
-  exibir: bloco;
-  posição: absoluta;
-}
-
-.annotationLayer .buttonWidgetAnnotation.checkBox entrada:verificado::antes,
-.annotationLayer .buttonWidgetAnnotation.checkBox entrada:verificado::depois {
-  altura: 80%;
-  esquerda: 45%;
-  largura: 1px;
-}
-
-.annotationLayer .buttonWidgetAnnotation.checkBox entrada:verificado::antes {
-  transformar: girar(45 graus);
-}
-
-.annotationLayer .buttonWidgetAnnotation.checkBox entrada:verificado::depois {
-  transformar: girar(-45 graus);
-}
-
-.annotationLayer .buttonWidgetAnnotation.radioButton entrada:verificado::antes {
-  raio da borda: 50%;
-  altura: 50%;
-  esquerda: 30%;
-  topo: 20%;
-  largura: 50%;
-}
-
-.annotationLayer .textWidgetAnnotation entrada.comb {
-  família de fontes: monoespaçada;
-  preenchimento-esquerdo: 2px;
-  preenchimento-direito: 0;
-}
-
-.annotationLayer .textWidgetAnnotation entrada.comb:foco {
-  /*
-   * O espaçamento entre letras é colocado no lado direito de cada caractere. Portanto, o
-   * o espaçamento entre letras do último caractere pode ser colocado fora do visível
-   * área, causando rolagem horizontal. Evitamos isso estendendo a largura
-   * quando o elemento tem foco e reverte isso quando perde o foco.
-   */
-  largura: 103%;
-}
-
-.annotationLayer .buttonWidgetAnnotation:is(.checkBox, .radioButton) entrada {
-  -webkit-aparência: nenhum;
-     -moz-appearance: nenhum;
-          aparência: nenhuma;
-}
-
-.annotationLayer .fileAttachmentAnnotation .popupTriggerArea {
-  altura: 100%;
-  largura: 100%;
-}
-
-.annotationLayer .popupAnnotation {
-  posição: absoluta;
-  tamanho da fonte: calc(9px * var(--fator-de-escala));
-  eventos-ponteiro: nenhum;
-  largura: -moz-max-content;
-  largura: max-content;
-  largura máxima: 45%;
-  altura: automático;
-}
-
-.annotationLayer .popup {
-  cor de fundo: rgba(255, 255, 153, 1);
-  box-shadow: 0 calc(2px * var(--fator de escala)) calc(5px * var(--fator de escala))
-    rgba(136, 136, 136, 1);
-  raio da borda: calc(2px * var(--fator de escala));
-  contorno: 1,5px rgb sólido(255, 255, 74);
-  preenchimento: calc(6px * var(--fator-de-escala));
-  cursor: ponteiro;
-  fonte: caixa de mensagem;
-  espaço em branco: normal;
-  quebra de linha: quebra de palavra;
-  eventos-ponteiro: auto;
-}
-
-.annotationLayer .popupAnnotation.focused .popup {
-  largura do contorno: 3px;
-}
-
-.annotationLayer .popup * {
-  tamanho da fonte: calc(9px * var(--fator-de-escala));
-}
-
-.annotationLayer .popup > .cabeçalho {
-  exibição: bloco embutido;
-}
-
-.annotationLayer .popup > .cabeçalho h1 {
-  exibição: em linha;
-}
-
-.annotationLayer .popup > .header .popupDate {
-  exibição: bloco embutido;
-  margem-esquerda: calc(5px * var(--fator-de-escala));
-  largura: -moz-fit-content;
-  largura: fit-content;
-}
-
-.annotationLayer .popupContent {
-  borda superior: 1px sólido rgba(51, 51, 51, 1);
-  margem superior: calc(2px * var(--fator-de-escala));
-  preenchimento-superior: calc(2px * var(--fator-de-escala));
-}
-
-.annotationLayer.richText > * {
-  espaço em branco: pré-encapsulamento;
-  tamanho da fonte: calc(9px * var(--fator-de-escala));
-}
-
-.annotationLayer .highlightAnnotation,
-.annotationLayer .underlineAnotação,
-.annotationLayer .squigglyAnotação,
-.annotationLayer .strikeoutAnotação,
-.annotationLayer .freeTextAnnotation,
-.annotationLayer .lineAnnotation svg linha,
-.annotationLayer .squareAnnotation svg retângulo,
-.annotationLayer .circleAnnotation svg elipse,
-.annotationLayer .polylineAnnotation svg polilinha,
-.annotationLayer .polygonAnnotation polígono svg,
-.annotationLayer .caretAnotação,
-.annotationLayer .inkAnnotation svg polilinha,
-.annotationLayer .stampAnnotation,
-.annotationLayer .fileAttachmentAnnotation {
-  cursor: ponteiro;
-}
-
-.annotationLayer seção svg {
-  posição: absoluta;
-  largura: 100%;
-  altura: 100%;
-  topo: 0;
-  esquerda: 0;
-}
-
-.annotationLayer .annotationTextContent {
-  posição: absoluta;
-  largura: 100%;
-  altura: 100%;
-  opacidade: 0;
-  cor: transparente;
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-  eventos-ponteiro: nenhum;
-}
-
-.annotationLayer .annotationTextContent intervalo {
-  largura: 100%;
-  exibição: bloco embutido;
-}
-
-.annotationLayer svg.quadrilateralsContainer {
-  conter: rigoroso;
-  largura: 0;
-  altura: 0;
-  posição: absoluta;
-  topo: 0;
-  esquerda: 0;
-  índice z: -1;
-}
-
-
-:raiz {
-  --xfa-unfocused-field-background: url("dados:imagem/svg+xml;charset=UTF-8,<svg width='1px' height='1px' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' style='preenchimento:rgba(0, 54, 255, 0,13);'/></svg>");
-  --xfa-focus-outline: automático;
-}
-
-@media screen e (forced-colors: ativo) {
-  :raiz {
-    --xfa-focus-outline: CanvasText sólido de 2px;
-  }
-  .xfaLayer *:obrigatório {
-    contorno: 1,5px sólido selectedItem;
-  }
-}
-
-.xfaLayer {
-  cor de fundo: transparente;
-}
-
-.xfaLayer .destaque {
-  margem: -1px;
-  preenchimento: 1px;
-  cor de fundo: rgba(235, 239, 203, 0.3);
-  raio da borda: 4px;
-}
-
-.xfaLayer .destaque.acrescentado {
-  posição: inicial;
-}
-
-.xfaLayer .destaque.início {
-  raio da borda: 4px 0 0 4px;
-}
-
-.xfaLayer .destaque.fim {
-  raio da borda: 0 4px 4px 0;
-}
-
-.xfaLayer .destaque.meio {
-  raio da borda: 0;
-}
-
-.xfaLayer .destaque.selecionado {
-  cor de fundo: rgba(203, 223, 203, 0.5);
-}
-
-.xfaPágina {
-  estouro: oculto;
-  posição: relativa;
-}
-
-.xfaÁrea de conteúdo {
-  posição: absoluta;
-}
-
-.xfaPrintOnly {
-  exibição: nenhuma;
-}
-
-.xfaLayer {
-  posição: absoluta;
-  alinhamento de texto: inicial;
-  topo: 0;
-  esquerda: 0;
-  transformar-origem: 0 0;
-  altura da linha: 1,2;
-}
-
-.xfaLayer * {
-  cor: herdar;
-  fonte: herdar;
-  estilo-de-fonte: herdar;
-  espessura da fonte: herdar;
-  kerning de fonte: herdar;
-  espaçamento entre letras: -0,01px;
-  alinhamento de texto: herdar;
-  decoração de texto: herdar;
-  dimensionamento de caixa: caixa de borda;
-  cor de fundo: transparente;
-  preenchimento: 0;
-  margem: 0;
-  eventos-ponteiro: auto;
-  altura da linha: herdar;
-}
-
-.xfaLayer *:obrigatório {
-  contorno: 1,5px vermelho sólido;
-}
-
-.xfaCamada div,
-.xfaLayer svg,
-.xfaLayer svg * {
-  eventos-ponteiro: nenhum;
-}
-
-.xfaCamada a {
-  cor: azul;
-}
-
-.xfaRich li {
-  margem-esquerda: 3em;
-}
-
-.xfaFonte {
-  cor: preto;
-  espessura da fonte: normal;
-  kerning de fonte: nenhum;
-  tamanho da fonte: 10px;
-  estilo de fonte: normal;
-  espaçamento entre letras: 0;
-  decoração de texto: nenhuma;
-  alinhamento vertical: 0;
-}
-
-.xfaCaption {
-  estouro: oculto;
-  flex: 0 0 automático;
-}
-
-.xfaCaptionForCheckButton {
-  estouro: oculto;
-  flex: 1 1 automático;
-}
-
-.xfaRótulo {
-  altura: 100%;
-  largura: 100%;
-}
-
-.xfaEsquerda {
-  exibição: flexível;
-  flex-direction: linha;
-  alinhar-itens: centro;
-}
-
-.xfaDireito {
-  exibição: flexível;
-  flex-direction: linha-reversa;
-  alinhar-itens: centro;
-}
-
-:is(.xfaEsquerda, .xfaDireita) > :is(.xfaCaption, .xfaCaptionForCheckButton) {
-  altura máxima: 100%;
-}
-
-.xfaTopo {
-  exibição: flexível;
-  flex-direction: coluna;
-  alinhar-itens: flex-start;
-}
-
-.xfaInferior {
-  exibição: flexível;
-  flex-direction: coluna-reversa;
-  alinhar-itens: flex-start;
-}
-
-:é(.xfaTop, .xfaBottom) > :é(.xfaCaption, .xfaCaptionForCheckButton) {
-  largura: 100%;
-}
-
-.xfaBorder {
-  cor de fundo: transparente;
-  posição: absoluta;
-  eventos-ponteiro: nenhum;
-}
-
-.xfaEnvolvido {
-  largura: 100%;
-  altura: 100%;
-}
-
-:is(.xfaTextfield, .xfaSelect):foco {
-  imagem de fundo: nenhuma;
-  cor de fundo: transparente;
-  contorno: var(--xfa-focus-outline);
-  deslocamento do contorno: -1px;
-}
-
-:is(.xfaCheckbox, .xfaRadio):foco {
-  contorno: var(--xfa-focus-outline);
-}
-
-.xfaCampo de texto,
-.xfaSelecionar {
-  altura: 100%;
-  largura: 100%;
-  flex: 1 1 automático;
-  borda: nenhuma;
-  redimensionar: nenhum;
-  imagem de fundo: var(--xfa-unfocused-field-background);
-}
-
-.xfaSelecionar {
-  preenchimento em linha: 2px;
-}
-
-:is(.xfaTop, .xfaBottom) > :is(.xfaTextfield, .xfaSelect) {
-  flex: 0 1 automático;
-}
-
-.xfaButton {
-  cursor: ponteiro;
-  largura: 100%;
-  altura: 100%;
-  borda: nenhuma;
-  alinhamento de texto: centralizar;
-}
-
-.xfaLink {
-  largura: 100%;
-  altura: 100%;
-  posição: absoluta;
-  topo: 0;
-  esquerda: 0;
-}
-
-.xfaCaixa de seleção,
-.xfaRadio {
-  largura: 100%;
-  altura: 100%;
-  flex: 0 0 automático;
-  borda: nenhuma;
-}
-
-.xfaRich {
-  espaço em branco: pré-encapsulamento;
-  largura: 100%;
-  altura: 100%;
-}
-
-.xfaImagem {
-  -o-object-position: canto superior esquerdo;
-     posição do objeto: canto superior esquerdo;
-  -o-object-fit: conter;
-     ajuste-objeto: conter;
-  largura: 100%;
-  altura: 100%;
-}
-
-.xfaLrTb,
-.xfaRlTb,
-.xfaTb {
-  exibição: flexível;
-  flex-direction: coluna;
-  alinhar-itens: esticar;
-}
-
-.xfaLr {
-  exibição: flexível;
-  flex-direction: linha;
-  alinhar-itens: esticar;
-}
-
-.xfaRl {
-  exibição: flexível;
-  flex-direction: linha-reversa;
-  alinhar-itens: esticar;
-}
-
-.xfaTb > div {
-  justificar-conteúdo: esquerda;
-}
-
-.xfaPosição {
-  posição: relativa;
-}
-
-.xfaÁrea {
-  posição: relativa;
-}
-
-.xfaValignMiddle {
-  exibição: flexível;
-  alinhar-itens: centro;
-}
-
-.xfaTabela {
-  exibição: flexível;
-  flex-direction: coluna;
-  alinhar-itens: esticar;
-}
-
-.xfaTabela .xfaLinha {
-  exibição: flexível;
-  flex-direction: linha;
-  alinhar-itens: esticar;
-}
-
-.xfaTabela .xfaRlRow {
-  exibição: flexível;
-  flex-direction: linha-reversa;
-  alinhar-itens: esticar;
-  flexível: 1;
-}
-
-.xfaTable .xfaRlRow > div {
-  flexível: 1;
-}
-
-:is(.xfaNonInteractive, .xfaDisabled, .xfaReadOnly) :is(entrada, área de texto) {
-  fundo: inicial;
-}
-
-@media imprimir {
-  .xfaCampo de texto,
-  .xfaSelecionar {
-    fundo: transparente;
-  }
-
-  .xfaSelecionar {
-    -webkit-aparência: nenhum;
-       -moz-appearance: nenhum;
-            aparência: nenhuma;
-    recuo do texto: 1px;
-    estouro de texto: "";
-  }
-}
-
-
-:raiz {
-  --largura do contorno: 2px;
-  --cor do contorno: azul;
-  --focus-outline: sólido var(--outline-width) var(--outline-color);
-  --hover-outline: tracejado var(--outline-width) var(--outline-color);
-  --altura-da-linha-de-texto-livre: 1,35;
-  --preenchimento de texto livre: 2px;
-  --resizer-tamanho: 8px;
-  --resizer-shift: calc(
-    0px - var(--largura-do-contorno) - var(--tamanho-do-resizer) / 2 - var(--largura-do-contorno) /
-      2
-  );
-  --resizer-color: branco;
-  --editorFreeText-editing-cursor: texto;
-  --editorInk-editing-cursor: url(imagens/cursor-editorInk.svg) 0 16, ponteiro;
-}
-
-@media (-webkit-min-device-pixel-ratio: 1.1), (min-resolução: 1.1dppx) {
-  :raiz {
-    --editorFreeText-editing-cursor: url(imagens/cursor-editorFreeText.svg) 0 16,
-      texto;
-  }
-}
-
-@media screen e (forced-colors: ativo) {
-  :raiz {
-    --largura do contorno: 3px;
-    --cor do contorno: amarelo;
-    --resizer-tamanho: 12px;
-    --resizer-color: BotãoFace;
-  }
-}
-
-[editor-de-dados-rotação="90"] {
-  transformar: girar(90 graus);
-}
-[editor-de-dados-rotação="180"] {
-  transformar: girar(180 graus);
-}
-[editor-de-dados-rotação="270"] {
-  transformar: girar(270 graus);
-}
-
-.annotationEditorLayer {
-  fundo: transparente;
-  posição: absoluta;
-  inserção: 0;
-  tamanho da fonte: calc(100px * var(--fator-de-escala));
-  transformar-origem: 0 0;
-  cursor: automático;
-  índice z: 4;
-}
-
-.annotationEditorLayer.esperando {
-  contente: "";
-  cursor: esperar;
-  posição: absoluta;
-  inserção: 0;
-  largura: 100%;
-  altura: 100%;
-}
-
-.annotationEditorLayer.freeTextEditing {
-  cursor: var(--editorFreeText-editing-cursor);
-}
-
-.annotationEditorLayer.inkEditing {
-  cursor: var(--editorInk-editing-cursor);
-}
-
-.annotationEditorCamada
-  :is(.freeTextEditor, .inkEditor, .stampEditor).arrastável.selectedEditor {
-  cursor: mover;
-}
-
-.annotationEditorLayer .selectedEditor {
-  esboço: var(--focus-outline);
-}
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) {
-  posição: absoluta;
-  fundo: transparente;
-  raio da borda: 3px;
-  índice z: 1;
-  transformar-origem: 0 0;
-  cursor: automático;
-  largura máxima: 100%;
-  altura máxima: 100%;
-}
-
-.annotationEditorLayer .freeTextEditor {
-  preenchimento: calc(var(--freetext-padding) * var(--scale-factor));
-  largura: automático;
-  altura: automático;
-  ação de toque: nenhuma;
-}
-
-.annotationEditorLayer .freeTextEditor .interno {
-  fundo: transparente;
-  borda: nenhuma;
-  inserção: 0;
-  estouro: visível;
-  espaço em branco: nowrap;
-  fonte: 10px sem serifa;
-  altura da linha: var(--altura-da-linha-de-texto-livre);
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-}
-
-.annotationEditorLayer .freeTextEditor .overlay {
-  posição: absoluta;
-  exibição: nenhuma;
-  fundo: transparente;
-  inserção: 0;
-  largura: 100%;
-  altura: 100%;
-}
-
-.annotationEditorLayer .freeTextEditor .overlay.enabled {
-  exibir: bloco;
-}
-
-.annotationEditorLayer .freeTextEditor .internal:empty::before {
-  conteúdo: attr(conteúdo-padrão);
-  cor: cinza;
-}
-
-.annotationEditorLayer .freeTextEditor .interno:foco {
-  esboço: nenhum;
-  -webkit-user-select: automático;
-     -moz-user-select: automático;
-          seleção do usuário: automático;
-}
-
-.annotationEditorCamada
-  :is(.freeTextEditor, .inkEditor, .stampEditor):hover:não(.selectedEditor) {
-  esboço: var(--hover-outline);
-}
-
-.annotationEditorLayer .inkEditor {
-  largura: 100%;
-  altura: 100%;
-}
-
-.annotationEditorLayer .inkEditor.edição {
-  cursor: herdar;
-}
-
-.annotationEditorLayer .inkEditor .inkEditorCanvas {
-  posição: absoluta;
-  inserção: 0;
-  largura: 100%;
-  altura: 100%;
-  ação de toque: nenhuma;
-}
-
-.annotationEditorLayer .stampEditor {
-  largura: automático;
-  altura: automático;
-}
-
-.annotationEditorLayer .stampEditor tela {
-  largura: 100%;
-  altura: 100%;
-}
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers {
-      largura: 100%;
-      altura: 100%;
-      posição: absoluta;
-      inserção: 0;
-    }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers.hidden {
-        exibição: nenhuma;
-      }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer {
-        largura: var(--resizer-size);
-        altura: var(--resizer-size);
-        raio da borda: 50%;
-        fundo: var(--resizer-color);
-        borda: var(--focus-outline);
-        posição: absoluta;
-      }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer.topLeft {
-          topo: var(--resizer-shift);
-          esquerda: var(--resizer-shift);
-        }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer.topMiddle {
-          topo: var(--resizer-shift);
-          esquerda: calc(50% + var(--resizer-shift));
-        }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer.topRight {
-          topo: var(--resizer-shift);
-          direita: var(--resizer-shift);
-        }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer.middleRight {
-          topo: calc(50% + var(--resizer-shift));
-          direita: var(--resizer-shift);
-        }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer.bottomRight {
-          inferior: var(--resizer-shift);
-          direita: var(--resizer-shift);
-        }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer.bottomMiddle {
-          inferior: var(--resizer-shift);
-          esquerda: calc(50% + var(--resizer-shift));
-        }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer.bottomLeft {
-          inferior: var(--resizer-shift);
-          esquerda: var(--resizer-shift);
-        }
-
-.annotationEditorLayer :is(.freeTextEditor, .inkEditor, .stampEditor) > .resizers > .resizer.middleLeft {
-          topo: calc(50% + var(--resizer-shift));
-          esquerda: var(--resizer-shift);
-        }
-
-.annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.topLeft,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.topLeft,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.topLeft,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.topLeft,
-      .annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.bottomRight,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.bottomRight,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.bottomRight,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.bottomRight {
-        cursor: nwse-resize;
-      }
-
-.annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.topMiddle,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.topMiddle,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.topMiddle,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.topMiddle,
-      .annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.bottomMiddle,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.bottomMiddle,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.bottomMiddle,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.bottomMiddle {
-        cursor: ns-resize;
-      }
-
-.annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.topRight,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.topRight,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.topRight,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.topRight,
-      .annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.bottomLeft,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.bottomLeft,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.bottomLeft,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.bottomLeft {
-        cursor: nesw-resize;
-      }
-
-.annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.middleRight,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.middleRight,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.middleRight,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.middleRight,
-      .annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.middleLeft,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.middleLeft,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.middleLeft,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.middleLeft {
-        cursor: ew-resize;
-      }
-
-.annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.topLeft,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.topLeft,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.topLeft,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.topLeft,
-      .annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.bottomRight,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.bottomRight,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.bottomRight,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.bottomRight {
-        cursor: nesw-resize;
-      }
-
-.annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.topMiddle,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.topMiddle,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.topMiddle,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.topMiddle,
-      .annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.bottomMiddle,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.bottomMiddle,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.bottomMiddle,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.bottomMiddle {
-        cursor: ew-resize;
-      }
-
-.annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.topRight,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.topRight,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.topRight,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.topRight,
-      .annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.bottomLeft,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.bottomLeft,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.bottomLeft,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.bottomLeft {
-        cursor: nwse-resize;
-      }
-
-.annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.middleRight,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.middleRight,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.middleRight,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.middleRight,
-      .annotationEditorLayer[rotação-principal-de-dados="0"]
-    :is([rotação-do-editor-de-dados="90"], [rotação-do-editor-de-dados="270"]) > .resizers > .resizer.middleLeft,
-      .annotationEditorLayer[rotação principal de dados="90"]
-    :is([rotação-do-editor-de-dados="0"], [rotação-do-editor-de-dados="180"]) > .resizers > .resizer.middleLeft,
-      .annotationEditorLayer[rotação principal de dados="180"]
-    :is([rotação-do-editor-de-dados="270"], [rotação-do-editor-de-dados="90"]) > .resizers > .resizer.middleLeft,
-      .annotationEditorLayer[rotação principal de dados="270"]
-    :is([rotação-do-editor-de-dados="180"], [rotação-do-editor-de-dados="0"]) > .resizers > .resizer.middleLeft {
-        cursor: ns-resize;
-      }
-
-:raiz {
-  --viewer-container-altura: 0;
-  --pdfViewer-padding-bottom: 0;
-  --margem da página: 1px automático -8px;
-  --page-border: 9px sólido transparente;
-  --spreadHorizontalWrapped-margin-LR: -3,5px;
-  --atraso-do-ícone-de-carregamento: 400 ms;
-}
-
-@media screen e (forced-colors: ativo) {
-  :raiz {
-    --pdfViewer-padding-bottom: 9px;
-    --margem da página: 8px automático -1px;
-    --page-border: CanvasText sólido de 1px;
-    --spreadHorizontalWrapped-margin-LR: 3,5px;
-  }
-}
-
-[rotação-principal-de-dados="90"] {
-  transformar: girar(90 graus) traduzirY(-100%);
-}
-[rotação-principal-de-dados="180"] {
-  transformar: girar(180 graus) traduzir(-100%, -100%);
-}
-[rotação-principal-de-dados="270"] {
-  transformar: girar(270 graus) traduzirX(-100%);
-}
-
-#elementoCópiaOculta {
-  posição: absoluta;
-  topo: 0;
-  esquerda: 0;
-  largura: 0;
-  altura: 0;
-  exibição: nenhuma;
-}
-
-.visualizador de pdf {
-  /* Defina esta variável aqui e não em :root para evitar a redistribuição em toda a interface do usuário.
-     ao escalar (ver #15929).
-     
-      --fator-de-escala: 1;*/
-  --fator de escala: 3;
-
-  preenchimento-inferior: var(--pdfViewer-preenchimento-inferior);
-}
-
-.pdfViewer .canvasWrapper {
-  estouro: oculto;
-  largura: 100%;
-  altura: 100%;
-  índice z: 1;
-}
-
-.pdfViewer .página {
-  direção: ltr;
-  largura: 816px;
-  altura: 1056px;
-  margem: var(--margem-da-página);
-  posição: relativa;
-  estouro: visível;
-  borda: var(--page-border);
-  clipe de fundo: caixa de conteúdo;
-  cor de fundo: rgba(255, 255, 255, 1);
-}
-
-.pdfViewer .página falsa {
-  posição: relativa;
-  largura: 0;
-  altura: var(--viewer-container-height);
-}
-
-.pdfViewer.noUserSelect {
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-}
-
-.pdfViewer.removePageBorders .página {
-  margem: 0 automático 10px;
-  borda: nenhuma;
-}
-
-.pdfViewer:é(.scrollHorizontal, .scrollWrapped),
-.espalhar {
-  margem em linha: 3,5px;
-  alinhamento de texto: centralizar;
-}
-
-.pdfViewer.scrollHorizontal,
-.espalhar {
-  espaço em branco: nowrap;
-}
-
-.pdfViewer.removePageBorders,
-.pdfViewer:é(.scrollHorizontal, .scrollWrapped) .spread {
-  margem-em-linha: 0;
-}
-
-.spread :é(.página, .dummyPage),
-.pdfViewer:é(.scrollHorizontal, .scrollWrapped) :é(.page, .spread) {
-  exibição: bloco embutido;
-  alinhamento vertical: meio;
-}
-
-.espalhe .página,
-.pdfViewer:é(.scrollHorizontal, .scrollWrapped) .page {
-  margem-em-linha: var(--spreadHorizontalWrapped-margin-LR);
-}
-
-.pdfViewer.removePageBorders .spread .page,
-.pdfViewer.removePageBorders:is(.scrollHorizontal, .scrollWrapped) .page {
-  margem-em-linha: 5px;
-}
-
-.pdfViewer .page tela {
-  margem: 0;
-  exibir: bloco;
-}
-
-.pdfViewer .page tela .structTree {
-  conter: rigoroso;
-}
-
-.pdfViewer .page canvas[oculto] {
-  exibição: nenhuma;
-}
-
-.pdfViewer .page canvas[zoom] {
-  largura: 100%;
-  altura: 100%;
-}
-
-.pdfViewer .page.loadingIcon::depois {
-  posição: absoluta;
-  topo: 0;
-  esquerda: 0;
-  contente: "";
-  largura: 100%;
-  altura: 100%;
-  fundo: url("images/loading-icon.gif") centro sem repetição;
-  exibição: nenhuma;
-  /* Usar um atraso com background-image não funciona,
-     consequentemente usamos o display. */
-  propriedade de transição: exibição;
-  atraso de transição: var(--atraso-do-ícone-de-carregamento);
-  índice z: 5;
-  conter: rigoroso;
-}
-
-.pdfViewer .page.loading::depois {
-  exibir: bloco;
-}
-
-.pdfViewer .page:not(.loading)::after {
-  propriedade de transição: nenhuma;
-  exibição: nenhuma;
-}
-
-.pdfPresentationMode .pdfViewer {
-  preenchimento-inferior: 0;
-}
-
-.pdfPresentationMode .spread {
-  margem: 0;
-}
-
-.pdfPresentationMode .pdfViewer .page {
-  margem: 0 automático;
-  borda: 2px sólido transparente;
-}
-
-:raiz {
-  --dir-fator: 1;
-  --inline-start: esquerda;
-  --inline-end: direita;
-
-  --largura da barra lateral: 200px;
-  --duração da transição da barra lateral: 200 ms;
-  --sidebar-transition-timing-function: facilidade;
-
-  --toolbar-icon-opacidade: 0,7;
-  --doorhanger-icon-opacity: 0,9;
-
-  --cor-principal: rgba(12, 12, 13, 1);
-  --corpo-bg-cor: rgb(255, 255, 255);
-  --progressBar-color: rgb(0, 0, 255);
-  --progressBar-bg-color: rgba(221, 221, 222, 1);
-  --progressBar-blend-color: rgba(116, 177, 239, 1);
-  --cor da barra de rolagem: automático;
-  --scrollbar-bg-color: automático;
-  --toolbar-icon-bg-color: rgba(0, 0, 0, 1);
-  --ícone-da-barra-de-ferramentas-hover-cor-de-bg: rgba(0, 0, 0, 1);
-
-  --barra lateral-estreita-cor-de-bg: rgba(212, 212, 215, 0,9);
-  --barra-de-ferramentas-de-cor-de-bg: rgba(245, 246, 247, 1);
-  --barra de ferramentas-bg-color: rgba(249, 249, 250, 1);
-  --cor-da-borda-da-barra-de-ferramentas: rgba(184, 184, 184, 1);
-  --toolbar-box-shadow: 0 1px 0 var(--toolbar-border-color);
-  --toolbar-border-bottom: nenhum;
-  --toolbarSidebar-box-shadow: inset calc(-1px * var(--dir-factor)) 0 0
-      rgba(0, 0, 0, 0,25),
-    0 1px 0 rgba(0, 0, 0, 0,15), 0 0 1px rgba(0, 0, 0, 0,1);
-  --toolbarSidebar-border-bottom: nenhum;
-  --botão-hover-color: rgba(221, 222, 223, 1);
-  --botão-alternado-cor: rgba(0, 0, 0, 1);
-  --toggled-btn-bg-color: rgba(0, 0, 0, 0.3);
-  --botão-ativo-alternado-de-passo-em-passo-cor: rgba(0, 0, 0, 0.4);
-  --toggled-hover-btn-outline: nenhum;
-  --dropdown-btn-bg-color: rgba(215, 215, 219, 1);
-  --dropdown-btn-border: nenhum;
-  --separador-cor: rgba(0, 0, 0, 0.3);
-  --campo-cor: rgba(6, 6, 6, 1);
-  --campo-bg-color: rgba(255, 255, 255, 1);
-  --cor-da-borda-do-campo: rgba(187, 187, 188, 1);
-  --treeitem-color: rgba(0, 0, 0, 0.8);
-  --treeitem-bg-color: rgba(0, 0, 0, 0,15);
-  --treeitem-hover-color: rgba(0, 0, 0, 0.9);
-  --treeitem-cor-selecionada: rgba(0, 0, 0, 0.9);
-  --treeitem-selected-bg-color: rgba(0, 0, 0, 0,25);
-  --miniatura-hover-color: rgba(0, 0, 0, 0.1);
-  --miniatura-cor-selecionada: rgba(0, 0, 0, 0.2);
-  --doorhanger-bg-color: rgba(255, 255, 255, 1);
-  --doorhanger-border-color: rgba(12, 12, 13, 0,2);
-  --doorhanger-hover-color: rgba(12, 12, 13, 1);
-  --doorhanger-hover-bg-color: rgba(237, 237, 237, 1);
-  --cor do separador de cabide de porta: rgba(222, 222, 222, 1);
-  --dialog-button-border: nenhum;
-  --dialog-button-bg-color: rgba(12, 12, 13, 0.1);
-  --dialog-button-hover-bg-color: rgba(12, 12, 13, 0.3);
-
-  --loading-icon: url(imagens/carregamento.svg);
-  --treeitem-expanded-icon: url(imagens/treeitem-expanded.svg);
-  --treeitem-collapsed-icon: url(imagens/treeitem-collapsed.svg);
-  --toolbarButton-editorFreeText-icon: url(imagens/toolbarButton-editorFreeText.svg);
-  --toolbarButton-editorInk-icon: url(imagens/toolbarButton-editorInk.svg);
-  --toolbarButton-editorStamp-icon: url(imagens/toolbarButton-editorStamp.svg);
-  --toolbarButton-menuArrow-icon: url(imagens/toolbarButton-menuArrow.svg);
-  --toolbarButton-sidebarToggle-icon: url(imagens/toolbarButton-sidebarToggle.svg);
-  --toolbarButton-secondaryToolbarToggle-ícone: url(imagens/toolbarButton-secondaryToolbarToggle.svg);
-  --toolbarButton-pageUp-icon: url(imagens/toolbarButton-pageUp.svg);
-  --toolbarButton-pageDown-icon: url(imagens/toolbarButton-pageDown.svg);
-  --toolbarButton-zoomOut-icon: url(imagens/toolbarButton-zoomOut.svg);
-  --toolbarButton-zoomIn-icon: url(imagens/toolbarButton-zoomIn.svg);
-  --toolbarButton-presentationMode-icon: url(imagens/toolbarButton-presentationMode.svg);
-  --toolbarButton-print-icon: url(imagens/toolbarButton-print.svg);
-  --toolbarButton-openFile-icon: url(imagens/toolbarButton-openFile.svg);
-  --toolbarButton-download-icon: url(imagens/toolbarButton-download.svg);
-  --toolbarButton-bookmark-icon: url(imagens/toolbarButton-bookmark.svg);
-  --toolbarButton-viewThumbnail-icon: url(imagens/toolbarButton-viewThumbnail.svg);
-  --toolbarButton-viewOutline-icon: url(imagens/toolbarButton-viewOutline.svg);
-  --toolbarButton-viewAttachments-icon: url(imagens/toolbarButton-viewAttachments.svg);
-  --toolbarButton-viewLayers-icon: url(imagens/toolbarButton-viewLayers.svg);
-  --toolbarButton-currentOutlineItem-icon: url(imagens/toolbarButton-currentOutlineItem.svg);
-  --toolbarButton-search-icon: url(imagens/toolbarButton-search.svg);
-  --findbarButton-previous-icon: url(imagens/findbarButton-previous.svg);
-  --findbarButton-next-icon: url(imagens/findbarButton-next.svg);
-  --secondaryToolbarButton-firstPage-icon: url(imagens/secondaryToolbarButton-firstPage.svg);
-  --secondaryToolbarButton-lastPage-icon: url(imagens/secondaryToolbarButton-lastPage.svg);
-  --secondaryToolbarButton-rotateCcw-icon: url(imagens/secondaryToolbarButton-rotateCcw.svg);
-  --secondaryToolbarButton-rotateCw-icon: url(imagens/secondaryToolbarButton-rotateCw.svg);
-  --secondaryToolbarButton-selectTool-icon: url(imagens/secondaryToolbarButton-selectTool.svg);
-  --secondaryToolbarButton-handTool-icon: url(imagens/secondaryToolbarButton-handTool.svg);
-  --secondaryToolbarButton-scrollPage-icon: url(imagens/secondaryToolbarButton-scrollPage.svg);
-  --secondaryToolbarButton-scrollVertical-icon: url(imagens/secondaryToolbarButton-scrollVertical.svg);
-  --secondaryToolbarButton-scrollHorizontal-icon: url(imagens/secondaryToolbarButton-scrollHorizontal.svg);
-  --secondaryToolbarButton-scrollWrapped-icon: url(imagens/secondaryToolbarButton-scrollWrapped.svg);
-  --secondaryToolbarButton-spreadNone-icon: url(imagens/secondaryToolbarButton-spreadNone.svg);
-  --secondaryToolbarButton-spreadOdd-icon: url(imagens/secondaryToolbarButton-spreadOdd.svg);
-  --secondaryToolbarButton-spreadEven-icon: url(imagens/secondaryToolbarButton-spreadEven.svg);
-  --secondaryToolbarButton-documentProperties-icon: url(imagens/secondaryToolbarButton-documentProperties.svg);
-  --editorParams-stampAddImage-icon: url(imagens/toolbarButton-zoomIn.svg);
-}
-
-[dir="rtl"]:raiz {
-  --dir-fator: -1;
-  --inline-start: direita;
-  --inline-end: esquerda;
-}
-
-@media (prefere-esquema-de-cores: Dominik) {
-  :raiz {
-    --cor-principal: rgba(249, 249, 250, 1);
-    --corpo-bg-cor: rgba(42, 42, 46, 0);
-    --progressBar-color: rgb(0, 0, 255);
-    --progressBar-bg-color: rgba(40, 40, 43, 1);
-    --progressBar-blend-color: rgba(20, 68, 133, 1);
-    --cor da barra de rolagem: rgba(121, 121, 123, 1);
-    --barra de rolagem-bg-color: rgba(35, 35, 39, 1);
-    --toolbar-icon-bg-color: rgba(255, 255, 255, 1);
-    --ícone-da-barra-de-ferramentas-hover-cor-de-bg: rgba(255, 255, 255, 1);
-
-    --barra lateral-estreita-cor-de-bg: rgba(42, 42, 46, 0.9);
-    --barra-de-ferramentas-de-cor-de-bg: rgba(50, 50, 52, 1);
-    --toolbar-bg-color: rgba(56, 56, 61, 1);
-    --cor-da-borda-da-barra-de-ferramentas: rgba(12, 12, 13, 1);
-    --botão-hover-color: rgba(102, 102, 103, 1);
-    --botão-alternado-cor: rgba(255, 255, 255, 1);
-    --toggled-btn-bg-color: rgba(0, 0, 0, 0.3);
-    --botão-ativo-alternado-de-passo-em-passo-cor: rgba(0, 0, 0, 0.4);
-    --dropdown-btn-bg-color: rgba(74, 74, 79, 1);
-    --separador-cor: rgba(0, 0, 0, 0.3);
-    --campo-cor: rgba(250, 250, 250, 1);
-    --campo-bg-color: rgba(64, 64, 68, 1);
-    --cor-da-borda-do-campo: rgba(115, 115, 115, 1);
-    --treeitem-color: rgba(255, 255, 255, 0.8);
-    --treeitem-bg-color: rgba(255, 255, 255, 0,15);
-    --treeitem-hover-color: rgba(255, 255, 255, 0.9);
-    --treeitem-selected-color: rgba(255, 255, 255, 0.9);
-    --treeitem-selected-bg-color: rgba(255, 255, 255, 0,25);
-    --miniatura-hover-color: rgba(255, 255, 255, 0.1);
-    --miniatura-cor-selecionada: rgba(255, 255, 255, 0.2);
-    --doorhanger-bg-color: rgba(74, 74, 79, 1);
-    --doorhanger-border-color: rgba(39, 39, 43, 1);
-    --doorhanger-hover-color: rgba(249, 249, 250, 1);
-    --doorhanger-hover-bg-color: rgba(93, 94, 98, 1);
-    --doorhanger-separator-color: rgba(92, 92, 97, 1);
-    --dialog-button-bg-color: rgba(92, 92, 97, 1);
-    --dialog-button-hover-bg-color: rgba(115, 115, 115, 1);
-
-    /* Esta imagem é usada em elementos <input>, o que infelizmente significa que
-     * a abordagem `mask-image` usada com todas as outras imagens não funciona
-     * aqui; por isso ainda temos duas versões desta imagem em particular. */
-    --loading-icon: url(imagens/carregamento-escuro.svg);
-  }
-}
-
-@media screen e (forced-colors: ativo) {
-  :raiz {
-    --button-hover-color: Realçar;
-    --doorhanger-hover-bg-color: Destaque;
-    --toolbar-icon-opacidade: 1;
-    --toolbar-icon-bg-color: Texto do botão;
-    --toolbar-icon-hover-bg-color: Face do botão;
-    --toggled-hover-active-btn-color: Texto do botão;
-    --toggled-hover-btn-outline: ButtonBorder sólido de 2px;
-    --toolbar-border-color: TextoDaTela;
-    --toolbar-border-bottom: sólido de 1px var(--toolbar-border-color);
-    --toolbar-box-shadow: nenhum;
-    --toggled-btn-color: Destacar texto;
-    --toggled-btn-bg-color: LinkText;
-    --doorhanger-hover-color: ButtonFace;
-    --doorhanger-border-color-whcm: Texto do botão sólido de 1px;
-    --doorhanger-triângulo-opacidade-whcm: 0;
-    --dialog-button-border: Destaque sólido de 1px;
-    --dialog-button-hover-bg-color: Realçar;
-    --dialog-button-hover-color: Face do botão;
-    --dropdown-btn-border: Texto do Botão sólido de 1px;
-    --field-border-color: Texto do botão;
-    --cor-principal: CanvasText;
-    --separator-color: TextoCinza;
-    --doorhanger-separator-color: GrayText;
-    --toolbarSidebar-box-shadow: nenhum;
-    --toolbarSidebar-border-bottom: sólido de 1px var(--toolbar-border-color);
-  }
-}
-
-@media screen e (prefere-reduced-motion: reduzir) {
-  :raiz {
-    --duração da transição da barra lateral: 0;
-  }
-}
-
-* {
-  preenchimento: 0;
-  margem: 0;
-}
-
-html,
-corpo {
-  altura: 100%;
-  largura: 100%;
-}
-
-corpo {
-  cor de fundo: var(--body-bg-color);
-  cor da barra de rolagem: var(--cor da barra de rolagem) var(--cor da barra de rolagem);
-}
-
-.escondido,
-[escondido] {
-  exibição: nenhuma !importante;
-}
-
-#viewerContainer.pdfPresentationMode:-webkit-tela-cheia {
-  topo: 0;
-  cor de fundo: rgba(0, 0, 0, 1);
-  largura: 100%;
-  altura: 100%;
-  estouro: oculto;
-  cursor: nenhum;
-  -webkit-user-select: nenhum;
-          seleção de usuário: nenhum;
-}
-
-#viewerContainer.pdfModo de apresentação:tela cheia {
-  topo: 0;
-  cor de fundo: rgba(0, 0, 0, 1);
-  largura: 100%;
-  altura: 100%;
-  estouro: oculto;
-  cursor: nenhum;
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-}
-
-.pdfPresentationMode:-webkit-full-screen section:not([data-internal-link]) {
-  eventos-ponteiro: nenhum;
-}
-
-.pdfPresentationMode:tela cheia seção:não([data-internal-link]) {
-  eventos-ponteiro: nenhum;
-}
-
-.pdfPresentationMode:-webkit-tela-cheia .textLayer span {
-  cursor: nenhum;
-}
-
-.pdfPresentationMode:tela cheia .textLayer span {
-  cursor: nenhum;
-}
-
-.pdfPresentationMode.pdfPresentationModeControls > *,
-.pdfPresentationMode.pdfPresentationModeControls .textLayer span {
-  cursor: padrão;
-}
-
-#Container externo {
-  largura: 100%;
-  altura: 100%;
-  posição: relativa;
-}
-
-#barralateralContainer {
-  posição: absoluta;
-  bloco de inserção: 32px 0;
-  inset-inline-start: calc(-1 * var(--largura-da-barra-lateral));
-  largura: var(--sidebar-width);
-  visibilidade: oculto;
-  índice z: 100;
-  fonte: caixa de mensagem;
-  borda superior: 1px sólido rgba(51, 51, 51, 1);
-  border-inline-end: var(--doorhanger-border-color-whcm);
-  propriedade de transição: inset-inline-start;
-  duração da transição: var(--sidebar-transition-duration);
-  função de tempo de transição: var(--função-de-tempo-de-transição-lateral);
-}
-
-#outerContainer:is(.barralateralMovendo, .barralateralAberta) #barralateralContainer {
-  visibilidade: visível;
-}
-#outerContainer.sidebarOpen #sidebarContainer {
-  inserção-em-linha-início: 0;
-}
-
-#mainContainer {
-  posição: absoluta;
-  inserção: 0;
-  largura mínima: 350px;
-}
-
-#barralateralConteúdo {
-  bloco de inserção: 32px 0;
-  inserção-em-linha-início: 0;
-  estouro: automático;
-  posição: absoluta;
-  largura: 100%;
-  box-shadow: inset calc(-1px * var(--dir-factor)) 0 0 rgba(0, 0, 0, 0.25);
-}
-
-#viewerContainer {
-  estouro: automático;
-  posição: absoluta;
-  inserção: 32px 0 0;
-  esboço: nenhum;
-}
-#viewerContainer:not(.pdfPresentationMode) {
-  duração da transição: var(--sidebar-transition-duration);
-  função de tempo de transição: var(--função-de-tempo-de-transição-lateral);
-}
-
-#outerContainer.sidebarOpen #viewerContainer:not(.pdfPresentationMode) {
-  inset-inline-start: var(-largura da barra lateral);
-  propriedade de transição: inset-inline-start;
-}
-
-.barra de ferramentas {
-  posição: relativa;
-  inserção-embutida: 0;
-  índice z: 9999;
-  cursor: padrão;
-  fonte: caixa de mensagem;
-}
-
-:is(.barra de ferramentas, .editorParamsToolbar, .findbar, #sidebarContainer)
-  :is(entrada, botão, selecionar),
-.secondaryToolbar :is(entrada, botão, a, selecionar) {
-  esboço: nenhum;
-  fonte: caixa de mensagem;
-}
-
-#toolbarContainer {
-  largura: 100%;
-}
-
-#barra de ferramentasBarra lateral {
-  largura: 100%;
-  altura: 32px;
-  cor de fundo: var(--sidebar-toolbar-bg-color);
-  caixa-sombra: var(--toolbarSidebar-box-shadow);
-  borda inferior: var(--toolbarSidebar-border-bottom);
-}
-
-#sidebarResizer {
-  posição: absoluta;
-  bloco de inserção: 0;
-  inserção-em-linha-fim: -6px;
-  largura: 6px;
-  índice z: 200;
-  cursor: ew-resize;
-}
-
-#toolbarContainer,
-.barra de localização,
-.barra de ferramentas secundária,
-.editorParamsToolbar {
-  posição: relativa;
-  altura: 32px;
-  cor de fundo: var(--toolbar-bg-color);
-  caixa-sombra: var(--barra-de-ferramentas-caixa-sombra);
-  borda inferior: var(--barra de ferramentas-borda inferior);
-}
-
-#visualizador de barra de ferramentas {
-  altura: 32px;
-}
-
-#barradecarregamento {
-  /* Defina essas variáveis ​​aqui, e não em :root, para evitar o refluxo do
-     visualizador inteiro ao atualizar o progresso (veja o problema 15958). */
-  --progressBar-percent: 0%;
-  --progressBar-end-offset: 0;
-
-  posição: absoluta;
-  inserção-inline: 0 var(--progressBar-end-offset);
-  altura: 8px;
-  cor de fundo: var(--progressBar-bg-color);
-  borda inferior: 1px sólido var(--toolbar-border-color);
-  propriedade de transição: inset-inline-start;
-  duração da transição: var(--sidebar-transition-duration);
-  função de tempo de transição: var(--função-de-tempo-de-transição-lateral);
-}
-
-#outerContainer.sidebarOpen #barradecarregamento {
-  inset-inline-start: var(-largura da barra lateral);
-}
-
-#loadingBar .progress {
-  posição: absoluta;
-  topo: 0;
-  inserção-em-linha-início: 0;
-  largura: 100%;
-  transformar: scaleX(var(--progressBar-percent));
-  transformar-origem: calc(50% - 50% * var(--dir-factor)) 0;
-  altura: 100%;
-  cor de fundo: var(--progressBar-color);
-  estouro: oculto;
-  transição: transformar 200ms;
-}
-
-@keyframes progressoIndeterminado {
-  0% {
-    transformar: translateX(calc(-142px * var(--dir-factor)));
-  }
-  100% {
-    transformar: traduzirX(0);
-  }
-}
-
-#loadingBar.indeterminado .progresso {
-  transformar: nenhum;
-  cor de fundo: var(--progressBar-bg-color);
-  transição: nenhuma;
-}
-
-#loadingBar.indeterminado .progresso .brilho {
-  posição: absoluta;
-  topo: 0;
-  inserção-em-linha-início: 0;
-  altura: 100%;
-  largura: calc(100% + 150px);
-  fundo: gradiente-linear-repetido(
-    135 graus,
-    var(--progressBar-blend-color) 0,
-    var(--progressBar-bg-color) 5px,
-    var(--progressBar-bg-color) 45px,
-    var(--progressBar-color) 55px,
-    var(--progressBar-color) 95px,
-    var(--progressBar-blend-color) 100px
-  );
-  animação: progressoIndeterminado 1s linear infinito;
-}
-
-#outerContainer.sidebarRedimensionamento
-  :is(#sidebarContainer, #viewerContainer, #loadingBar) {
-  /* Melhore a capacidade de resposta e evite falhas visuais quando a barra lateral for redimensionada. */
-  duração da transição: 0s;
-}
-
-.barra de localização,
-.barra de ferramentas secundária,
-.editorParamsToolbar {
-  topo: 32px;
-  posição: absoluta;
-  índice z: 30000;
-  altura: automático;
-  preenchimento: 0 4px;
-  margem: 4px 2px;
-  fonte: caixa de mensagem;
-  tamanho da fonte: 10px;
-  altura da linha: 14px;
-  alinhamento de texto: esquerda;
-  cursor: padrão;
-}
-
-.barra de localização {
-  inserção-em-linha-início: 64px;
-  largura mínima: 200px; /* 300px*/
-  cor de fundo: var(--toolbar-bg-color);
-}
-.barra de localização > div {
-  altura: 32px;
-}
-.findbar > div#findbarInputContainer {
-  margem-em-linha-final: 4px;
-}
-.findbar.wrapContainers > div,
-.findbar.wrapContainers > div#findbarMessageContainer > * {
-  claro: ambos;
-}
-.findbar.wrapContainers > div#findbarMessageContainer {
-  altura: automático;
-}
-
-.findbar entrada[tipo="caixa de seleção"] {
-  eventos-ponteiro: nenhum;
-}
-
-.rótulo da barra de localização {
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-}
-
-.findbar rótulo: pairar,
-.findbar entrada:foco-visível + rótulo {
-  cor: var(--toggled-btn-color);
-  cor de fundo: var(--cor-do-botão-hover);
-}
-
-.findbar .toolbarField[type="checkbox"]:marcado + .toolbarLabel {
-  cor de fundo: var(--toggled-btn-bg-color) !importante;
-  cor: var(--toggled-btn-color);
-}
-
-#encontrarEntrada {
-  largura: 130px;
-}
-#findInput::-moz-placeholder {
-  estilo de fonte: normal;
-}
-#findInput::espaço reservado {
-  estilo de fonte: normal;
-}
-#findInput[data-status="pendente"] {
-  imagem de fundo: var(--loading-icon);
-  background-repeat: sem repetição;
-  posição de fundo: calc(50% + 48% * var(--dir-factor));
-}
-#findInput[data-status="nãoEncontrado"] {
-  cor de fundo: rgba(255, 0, 0, 0.856);
-}
-
-.barra de ferramentas secundária,
-.editorParamsToolbar {
-  preenchimento: 6px 0 10px;
-  inserção-embutida-final: 4px;
-  altura: automático;
-  cor de fundo: var(--doorhanger-bg-color);
-}
-
-.editorParamsToolbarContainer {
-  largura: 220px;
-  margem inferior: -4px;
-}
-
-.editorParamsToolbarContainer > .editorParamsSetter {
-  altura mínima: 26px;
-  exibição: flexível;
-  alinhar-itens: centro;
-  justificar-conteúdo: espaço-entre;
-  preenchimento em linha: 10px;
-}
-
-.editorParamsToolbarContainer .editorParamsLabel {
-  preenchimento-em-linha-final: 10px;
-  flex: nenhum;
-  cor: var(--cor-principal);
-}
-
-.editorParamsToolbarContainer .editorParamsColor {
-  largura: 32px;
-  altura: 32px;
-  flex: nenhum;
-}
-
-.editorParamsToolbarContainer .editorParamsSlider {
-  cor de fundo: transparente;
-  largura: 90px;
-  flexível: 0 1 0;
-}
-
-.editorParamsToolbarContainer .editorParamsSlider::-moz-range-progress {
-  cor de fundo: preto;
-}
-
-.editorParamsToolbarContainer .editorParamsSlider::-webkit-slider-runnable-track,
-.editorParamsToolbarContainer .editorParamsSlider::-moz-range-track {
-  cor de fundo: preto;
-}
-
-.editorParamsToolbarContainer .editorParamsSlider::-webkit-slider-thumb,
-.editorParamsToolbarContainer .editorParamsSlider::-moz-range-thumb {
-  cor de fundo: branco;
-}
-
-#secondaryToolbarButtonContainer {
-  largura máxima: 220px;
-  altura mínima: 26px;
-  altura máxima: calc(var(--viewer-container-height) - 40px);
-  estouro-y: automático;
-  margem inferior: -4px;
-}
-
-#editorStampParamsToolbar {
-  inserção-embutida-final: 40px;
-  cor de fundo: var(--toolbar-bg-color);
-}
-
-#editorInkParamsToolbar {
-  inserção-embutida-final: 68px;
-  cor de fundo: var(--toolbar-bg-color);
-}
-
-#editorFreeTextParamsToolbar {
-  inserção-embutida-final: 96px;
-  cor de fundo: var(--toolbar-bg-color);
-}
-
-#editorStampAddImage::antes {
-  -webkit-mask-image: var(--editorParams-stampAddImage-icon);
-          máscara-imagem: var(--editorParams-stampAddImage-icon);
-}
-
-.cabide de porta,
-.doorHangerDireito {
-  raio da borda: 2px;
-  caixa-sombra:
-    0 1px 5px var(--doorhanger-border-color),
-    0 0 0 1px var(--doorhanger-border-color);
-  borda: var(--doorhanger-border-color-whcm);
-}
-:is(.doorHanger, .doorHangerRight)::depois,
-:is(.doorHanger, .doorHangerRight)::antes {
-  fundo: 100%;
-  borda: 8px sólido rgba(0, 0, 0, 0);
-  contente: " ";
-  altura: 0;
-  largura: 0;
-  posição: absoluta;
-  eventos-ponteiro: nenhum;
-  opacidade: var(--doorhanger-triangle-opacity-whcm);
-}
-.doorHanger::depois {
-  inserção-em-linha-início: 10px;
-  margem-inline-start: -8px;
-  cor-da-borda-inferior: var(--toolbar-bg-color);
-}
-.doorHangerRight::depois {
-  inserção-embutida-final: 10px;
-  margem-em-linha-final: -8px;
-  cor-da-borda-inferior: var(--doorhanger-bg-color);
-}
-:is(.doorHanger, .doorHangerRight)::antes {
-  cor-da-borda-inferior: var(--doorhanger-border-color);
-  largura da borda: 9px;
-}
-.doorHanger::antes {
-  inserção-em-linha-início: 10px;
-  margem-inline-start: -9px;
-}
-.doorHangerRight::antes {
-  inserção-embutida-final: 10px;
-  margem-em-linha-final: -9px;
-}
-
-#encontrarResultadosContagem {
-  cor de fundo: rgba(217, 217, 217, 1);
-  cor: rgba(82, 82, 82, 1);
-  alinhamento de texto: centralizar;
-  preenchimento: 4px 5px;
-  margem: 5px;
-}
-
-#findMsg[data-status="nãoEncontrado"] {
-  espessura da fonte: negrito;
-}
-
-:is(#findResultsCount, #findMsg):vazio {
-  exibição: nenhuma;
-}
-
-#toolbarViewerMiddle {
-  posição: absoluta;
-  esquerda: 50%;
-  transformar: traduzirX(-50%);
-}
-
-#toolbarViewerEsquerda,
-#barra de ferramentasBarra lateralEsquerda {
-  flutuar: var(--inline-start);
-}
-#toolbarViewerDireita,
-#barra de ferramentasBarra lateral direita {
-  flutuar: var(--inline-end);
-}
-
-#toolbarViewerLeft > *,
-#toolbarViewerMiddle > *,
-#toolbarViewerRight > *,
-#barraDeFerramentasBarraLateralEsquerda*,
-#barraDeFerramentasBarraLateralDireita *,
-.barra de busca * {
-  posição: relativa;
-  flutuar: var(--inline-start);
-}
-
-#toolbarViewerEsquerda {
-  preenchimento-em-linha-início: 1px;
-}
-#toolbarViewerDireita {
-  preenchimento-em-linha-final: 1px;
-}
-#barra de ferramentasBarra lateral direita {
-  preenchimento-em-linha-final: 2px;
-}
-
-.splitToolbarButton {
-  margem: 2px;
-  exibição: bloco embutido;
-}
-.splitToolbarButton > .toolbarButton {
-  flutuar: var(--inline-start);
-}
-
-.botão da barra de ferramentas,
-.secondaryToolbarButton,
-.dialogButton {
-  borda: nenhuma;
-  antecedentes: nenhum;
-  largura: 28px;
-  altura: 28px;
-  esboço: nenhum;
-}
-
-.dialogButton:is(:hover, :foco-visível) {
-  cor de fundo: var(--dialog-button-hover-bg-color);
-}
-
-.dialogButton:is(:hover, :focus-visible) > span {
-  cor: var(--dialog-button-hover-color);
-}
-
-.toolbarButton > intervalo {
-  exibição: bloco embutido;
-  largura: 0;
-  altura: 0;
-  estouro: oculto;
-}
-
-:is(.toolbarButton, .secondaryToolbarButton, .dialogButton)[desabilitado] {
-  opacidade: 0,5;
-}
-
-.splitToolbarButton > .toolbarButton:is(:hover, :focus-visible),
-.dropdownToolbarButton:hover {
-  cor de fundo: var(--cor-do-botão-hover);
-}
-.splitToolbarButton > .toolbarButton {
-  posição: relativa;
-  margem: 0;
-}
-#toolbarSidebar .splitToolbarButton > .toolbarButton {
-  margem-em-linha-final: 2px;
-}
-
-.splitToolbarButtonSeparator {
-  flutuar: var(--inline-start);
-  margem: 4px 0;
-  largura: 1px;
-  altura: 20px;
-  cor de fundo: var(--cor-separador);
-}
-
-.botão da barra de ferramentas,
-.dropdownBarraDeFerramentasBotão,
-.secondaryToolbarButton,
-.dialogButton {
-  largura mínima: 16px;
-  margem: 2px 1px;
-  preenchimento: 2px 6px 0;
-  borda: nenhuma;
-  raio da borda: 2px;
-  cor: var(--cor-principal);
-  tamanho da fonte: 12px;
-  altura da linha: 14px;
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-  cursor: padrão;
-  dimensionamento de caixa: caixa de borda;
-}
-
-.toolbarButton:is(:hover, :foco-visível) {
-  cor de fundo: var(--cor-do-botão-hover);
-}
-.secondaryToolbarButton:is(:hover, :foco-visível) {
-  cor de fundo: var(--doorhanger-hover-bg-color);
-  cor: var(--doorhanger-hover-color);
-}
-
-:is(.toolbarButton, .secondaryToolbarButton).toggled,
-.splitToolbarButton.toggled > .toolbarButton.toggled {
-  cor de fundo: var(--toggled-btn-bg-color);
-  cor: var(--toggled-btn-color);
-}
-
-:is(.toolbarButton, .secondaryToolbarButton).toggled:hover,
-.splitToolbarButton.toggled > .toolbarButton.toggled:hover {
-  esboço: var(--toggled-hover-btn-outline) !importante;
-}
-
-:is(.toolbarButton, .secondaryToolbarButton).toggled::antes {
-  cor de fundo: var(--cor-do-botão-alternado);
-}
-
-:is(.toolbarButton, .secondaryToolbarButton).toggled:hover:ativo,
-.splitToolbarButton.toggled > .toolbarButton.toggled:hover:ativo {
-  cor de fundo: var(--cor-do-botão-ativo-alternado-em-passo-destaque);
-}
-
-.dropdownBarraDeFerramentasBotão {
-  /* Defina esta variável aqui, e não em :root, para evitar o refluxo da
-     visualizador inteiro ao atualizar a largura. */
-  --escala-seleção-largura: 100px;
-
-  largura: var(--scale-select-width);
-  preenchimento: 0;
-  cor de fundo: var(--dropdown-btn-bg-color);
-  borda: var(--dropdown-btn-border);
-}
-.dropdownToolbarButton::depois {
-  topo: 6px;
-  inserção-embutida-final: 6px;
-  eventos-ponteiro: nenhum;
-  -webkit-mask-image: var(--toolbarButton-menuArrow-icon);
-          imagem-máscara: var(--toolbarButton-menuArrow-icon);
-}
-
-.dropdownToolbarButton > selecionar {
-  -webkit-aparência: nenhum;
-     -moz-appearance: nenhum;
-          aparência: nenhuma;
-  largura: herdar;
-  altura: 28px;
-  tamanho da fonte: 12px;
-  cor: var(--cor-principal);
-  margem: 0;
-  preenchimento: 1px 0 2px;
-  preenchimento-em-linha-início: 6px;
-  borda: nenhuma;
-  cor de fundo: var(--dropdown-btn-bg-color);
-}
-.dropdownToolbarButton > selecionar:é(:hover, :foco-visível) {
-  cor de fundo: var(--cor-do-botão-hover);
-  cor: var(--toggled-btn-color);
-}
-.dropdownToolbarButton > selecionar > opção {
-  plano de fundo: var(--doorhanger-bg-color);
-  cor: var(--cor-principal);
-}
-
-.barra de ferramentasButtonSpacer {
-  largura: 20px;
-  exibição: bloco embutido;
-  altura: 0px;
-}
-
-:is(.toolbarButton, .secondaryToolbarButton, .treeItemToggler)::antes,
-.dropdownToolbarButton::depois {
-  /* Todas as imagens correspondentes têm um tamanho de 16x16
-   * Todos os contêineres relevantes têm um tamanho de 28x28 */
-  posição: absoluta;
-  exibição: bloco embutido;
-  largura: 16px;
-  altura: 16px;
-
-  contente: "";
-  cor de fundo: var(--toolbar-icon-bg-color);
-  -webkit-mask-size: capa;
-          tamanho da máscara: capa;
-}
-
-.dropdownToolbarButton:is(:hover, :focus-visible, :active)::after {
-  cor de fundo: var(--toolbar-icon-hover-bg-color);
-}
-
-.toolbarButton::antes {
-  opacidade: var(--toolbar-icon-opacity);
-  topo: 6px;
-  esquerda: 6px;
-}
-
-.toolbarButton:is(:hover, :focus-visible)::antes,
-.secondaryToolbarButton:is(:hover, :focus-visible)::before {
-  cor de fundo: var(--toolbar-icon-hover-bg-color);
-}
-
-.secondaryToolbarButton::antes {
-  opacidade: var(--doorhanger-icon-opacity);
-  topo: 5px;
-  inserção-em-linha-início: 12px;
-}
-
-#sidebarToggle::antes {
-  -webkit-mask-image: var(--toolbarButton-sidebarToggle-icon);
-          máscara-imagem: var(--toolbarButton-sidebarToggle-icon);
-  transformar: scaleX(var(--dir-factor));
-}
-
-#secondaryToolbarToggle::antes {
-  -webkit-mask-image: var(--toolbarButton-secondaryToolbarToggle-icon);
-          máscara-imagem: var(--toolbarButton-secondaryToolbarToggle-icon);
-  transformar: scaleX(var(--dir-factor));
-}
-
-#findAnterior::antes {
-  -webkit-mask-image: var(--findbarButton-previous-icon);
-          máscara-imagem: var(--findbarButton-previous-icon);
-}
-
-#findNext::antes {
-  -webkit-mask-image: var(--findbarButton-next-icon);
-          máscara-imagem: var(--findbarButton-next-icon);
-}
-
-#anterior::antes {
-  -webkit-mask-image: var(--toolbarButton-pageUp-icon);
-          máscara-imagem: var(--toolbarButton-pageUp-icon);
-}
-
-#próximo::antes {
-  -webkit-mask-image: var(--toolbarButton-pageDown-icon);
-          máscara-imagem: var(--toolbarButton-pageDown-icon);
-}
-
-#zoomOut::antes {
-  -webkit-mask-image: var(--toolbarButton-zoomOut-icon);
-          máscara-imagem: var(--toolbarButton-zoomOut-icon);
-}
-
-#zoomIn::antes {
-  -webkit-mask-image: var(--toolbarButton-zoomIn-icon);
-          máscara-imagem: var(--toolbarButton-zoomIn-icon);
-}
-
-#presentationMode::antes {
-  -webkit-mask-image: var(--toolbarButton-presentationMode-icon);
-          máscara-imagem: var(--toolbarButton-presentationMode-icon);
-}
-
-#editorFreeText::antes {
-  -webkit-mask-image: var(--toolbarButton-editorFreeText-icon);
-          máscara-imagem: var(--toolbarButton-editorFreeText-icon);
-}
-
-#editorInk::antes {
-  -webkit-mask-image: var(--toolbarButton-editorInk-icon);
-          máscara-imagem: var(--toolbarButton-editorInk-icon);
-}
-
-#editorStamp::antes {
-  -webkit-mask-image: var(--toolbarButton-editorStamp-icon);
-          máscara-imagem: var(--toolbarButton-editorStamp-icon);
-}
-
-#print::antes,
-#secondaryPrint::antes {
-  -webkit-mask-image: var(--toolbarButton-print-icon);
-          máscara-imagem: var(--toolbarButton-print-icon);
-}
-
-:is(#openFile, #secondaryOpenFile)::antes {
-  -webkit-mask-image: var(--toolbarButton-openFile-icon);
-          máscara-imagem: var(--toolbarButton-openFile-icon);
-}
-
-:is(#download, #downloadsecundário)::antes {
-  -webkit-mask-image: var(--toolbarButton-download-icon);
-          máscara-imagem: var(--toolbarButton-download-icon);
-}
-
-a.secondaryToolbarButton {
-  preenchimento-superior: 5px;
-  decoração de texto: nenhuma;
-}
-a:is(.toolbarButton, .secondaryToolbarButton)[href="#"] {
-  opacidade: 0,5;
-  eventos-ponteiro: nenhum;
-}
-
-#viewBookmark::antes {
-  -webkit-mask-image: var(--toolbarButton-bookmark-icon);
-          máscara-imagem: var(--toolbarButton-bookmark-icon);
-}
-
-#viewThumbnail::antes {
-  -webkit-mask-image: var(--toolbarButton-viewThumbnail-icon);
-          máscara-imagem: var(--toolbarButton-viewThumbnail-icon);
-}
-
-#viewOutline::antes {
-  -webkit-mask-image: var(--toolbarButton-viewOutline-icon);
-          máscara-imagem: var(--toolbarButton-viewOutline-icon);
-  transformar: scaleX(var(--dir-factor));
-}
-
-#viewAttachments::antes {
-  -webkit-mask-image: var(--toolbarButton-viewAttachments-icon);
-          máscara-imagem: var(--toolbarButton-viewAttachments-icon);
-}
-
-#viewLayers::antes {
-  -webkit-mask-image: var(--toolbarButton-viewLayers-icon);
-          máscara-imagem: var(--toolbarButton-viewLayers-icon);
-}
-
-#currentOutlineItem::antes {
-  -webkit-mask-image: var(--toolbarButton-currentOutlineItem-icon);
-          máscara-imagem: var(--toolbarButton-currentOutlineItem-icon);
-  transformar: scaleX(var(--dir-factor));
-}
-
-#viewFind::antes {
-  -webkit-mask-image: var(--toolbarButton-search-icon);
-          máscara-imagem: var(--toolbarButton-search-icon);
-}
-
-.pdfSidebarNotification::depois {
-  posição: absoluta;
-  exibição: bloco embutido;
-  topo: 2px;
-  inserção-embutida-final: 2px;
-  /* Crie um círculo preenchido, com um diâmetro de 9 pixels, usando apenas CSS: */
-  contente: "";
-  cor de fundo: rgba(112, 219, 85, 1);
-  altura: 9px;
-  largura: 9px;
-  raio da borda: 50%;
-}
-
-.botãodabarradeferramentassecundária {
-  posição: relativa;
-  margem: 0;
-  preenchimento: 0 0 1px;
-  preenchimento-em-linha-início: 36px;
-  altura: automático;
-  altura mínima: 26px;
-  largura: automático;
-  largura mínima: 100%;
-  alinhamento de texto: iniciar;
-  espaço em branco: normal;
-  raio da borda: 0;
-  dimensionamento de caixa: caixa de borda;
-  exibição: bloco embutido;
-}
-.secondaryToolbarButton > intervalo {
-  preenchimento-em-linha-final: 4px;
-}
-
-#primeiraPágina::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-firstPage-icon);
-          imagem-máscara: var(--secondaryToolbarButton-firstPage-icon);
-}
-
-#lastPage::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-lastPage-icon);
-          máscara-imagem: var(--secondaryToolbarButton-lastPage-icon);
-}
-
-#pageRotateCcw::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-rotateCcw-icon);
-          máscara-imagem: var(--secondaryToolbarButton-rotateCcw-icon);
-}
-
-#pageRotateCw::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-rotateCw-icon);
-          máscara-imagem: var(--secondaryToolbarButton-rotateCw-icon);
-}
-
-#cursorSelectTool::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-selectTool-icon);
-          máscara-imagem: var(--secondaryToolbarButton-selectTool-icon);
-}
-
-#cursorHandTool::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-handTool-icon);
-          máscara-imagem: var(--secondaryToolbarButton-handTool-icon);
-}
-
-#scrollPage::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-scrollPage-icon);
-          máscara-imagem: var(--secondaryToolbarButton-scrollPage-icon);
-}
-
-#scrollVertical::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-scrollVertical-icon);
-          máscara-imagem: var(--secondaryToolbarButton-scrollVertical-icon);
-}
-
-#scrollHorizontal::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-scrollHorizontal-icon);
-          máscara-imagem: var(--secondaryToolbarButton-scrollHorizontal-icon);
-}
-
-#scrollWrapped::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-scrollWrapped-icon);
-          máscara-imagem: var(--secondaryToolbarButton-scrollWrapped-icon);
-}
-
-#spreadNone::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-spreadNone-icon);
-          máscara-imagem: var(--secondaryToolbarButton-spreadNone-icon);
-}
-
-#spreadOdd::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-spreadOdd-icon);
-          máscara-imagem: var(--secondaryToolbarButton-spreadOdd-icon);
-}
-
-#spreadEven::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-spreadEven-icon);
-          máscara-imagem: var(--secondaryToolbarButton-spreadEven-icon);
-}
-
-#documentProperties::antes {
-  -webkit-mask-image: var(--secondaryToolbarButton-documentProperties-icon);
-          máscara-imagem: var(--secondaryToolbarButton-documentProperties-icon);
-}
-
-.verticalToolbarSeparator {
-  exibir: bloco;
-  margem: 5px 2px;
-  largura: 1px;
-  altura: 22px;
-  cor de fundo: var(--cor-separador);
-}
-.horizontalToolbarSeparator {
-  exibir: bloco;
-  margem: 6px 0;
-  altura: 1px;
-  largura: 100%;
-  cor de fundo: var(--doorhanger-separator-color);
-}
-
-.campo da barra de ferramentas {
-  preenchimento: 4px 7px;
-  margem: 3px 0;
-  raio da borda: 2px;
-  cor de fundo: var(--campo-cor-de-fundo);
-  background-clip: caixa de preenchimento;
-  borda: 1px sólido var(--field-border-color);
-  box-shadow: nenhum;
-  cor: var(--cor-do-campo);
-  tamanho da fonte: 12px;
-  altura da linha: 16px;
-  esboço: nenhum;
-}
-
-.toolbarField[tipo="caixa de seleção"] {
-  opacidade: 0;
-  posição: absoluto !importante;
-  esquerda: 0;
-  margem: 10px 0 3px;
-  margem-inline-start: 7px;
-}
-
-#pageNumber {
-  -moz-appearance: textfield; /* oculta o spinner no moz */
-  alinhamento de texto: fim;
-  largura: 40px;
-  tamanho do plano de fundo: 0 0;
-  propriedade de transição: nenhuma;
-}
-#pageNumber.visiblePageIsLoading {
-  imagem de fundo: var(--loading-icon);
-  background-repeat: sem repetição;
-  posição de fundo: calc(50% - 42% * var(--dir-factor));
-  tamanho do fundo: 16px 16px;
-  /* Usar um atraso com background-image não funciona,
-     consequentemente usamos background-size. */
-  propriedade de transição: tamanho do plano de fundo;
-  atraso de transição: var(--atraso-do-ícone-de-carregamento);
-}
-#pageNumber::-webkit-inner-spin-button {
-  -webkit-aparência: nenhum;
-}
-
-.toolbarField:foco {
-  cor da borda: #ff0a0a;
-}
-
-.toolbarRótulo {
-  largura mínima: 16px;
-  preenchimento: 7px;
-  margem: 2px;
-  raio da borda: 2px;
-  cor: var(--cor-principal);
-  tamanho da fonte: 12px;
-  altura da linha: 14px;
-  alinhamento de texto: esquerda;
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-  cursor: padrão;
-}
-
-#numPages.toolbarLabel {
-  preenchimento-em-linha-início: 3px;
-}
-
-#thumbnailView,
-#contornoVer,
-#anexosVer,
-#camadasVisualizar {
-  posição: absoluta;
-  largura: calc(100% - 8px);
-  bloco de inserção: 0;
-  preenchimento: 4px 4px 0;
-  estouro: automático;
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-}
-#thumbnailView {
-  largura: calc(100% - 60px);
-  preenchimento: 10px 30px 0;
-}
-
-#thumbnailView > a:is(:ativo, :foco) {
-  esboço: 0;
-}
-
-.miniatura {
-  /* Defina essas variáveis ​​aqui, e não em :root, pois o indivíduo
-     As miniaturas podem ter tamanhos diferentes. */
-  --largura-da-miniatura: 0;
-  --altura da miniatura: 0;
-
-  flutuar: var(--inline-start);
-  largura: var(--largura-da-miniatura);
-  altura: var(--altura-da-miniatura);
-  margem: 0 10px 5px;
-  preenchimento: 1px;
-  borda: 7px sólido transparente;
-  raio da borda: 2px;
-}
-
-#thumbnailView > a:último-do-tipo > .thumbnail {
-  margem inferior: 10px;
-}
-
-a:foco > .miniatura,
-.miniatura:hover {
-  cor da borda: var(--cor-do-hover-da-miniatura);
-}
-.miniatura.selecionado {
-  cor da borda: var(--cor-selecionada-da-miniatura) !importante;
-}
-
-.thumbnailImage {
-  largura: var(--largura-da-miniatura);
-  altura: var(--altura-da-miniatura);
-  opacidade: 0,9;
-}
-a:foco > .miniatura > .imagemminiatura,
-.thumbnail:hover > .thumbnailImage {
-  opacidade: 0,95;
-}
-.thumbnail.selected > .thumbnailImage {
-  opacidade: 1 !importante;
-}
-
-.thumbnail:not([dados carregados]) > .thumbnailImage {
-  largura: calc(var(--largura-da-miniatura) - 2px);
-  altura: calc(var(--thumbnail-height) - 2px);
-  borda: 1px tracejada rgba(132, 132, 132, 1);
-}
-
-.árvoreComAninhamentoProfundo > .árvoreItem,
-.treeItem > .treeItems {
-  margem-inline-start: 20px;
-}
-
-.treeItem > a {
-  decoração de texto: nenhuma;
-  exibição: bloco embutido;
-  /* Subtraia o preenchimento direito (esquerdo, no modo RTL) do contêiner: */
-  largura mínima: calc(100% - 4px);
-  altura: automático;
-  margem inferior: 1px;
-  preenchimento: 2px 0 5px;
-  preenchimento-em-linha-início: 4px;
-  raio da borda: 2px;
-  cor: var(--treeitem-color);
-  tamanho da fonte: 13px;
-  altura da linha: 15px;
-  -webkit-user-select: nenhum;
-     -moz-user-select: nenhum;
-          seleção de usuário: nenhum;
-  espaço em branco: normal;
-  cursor: ponteiro;
-}
-
-#layersView .treeItem > a * {
-  cursor: ponteiro;
-}
-#layersView .treeItem > a > rótulo {
-  preenchimento-em-linha-início: 4px;
-}
-#layersView .treeItem > a > rótulo > entrada {
-  flutuar: var(--inline-start);
-  margem superior: 1px;
-}
-
-.alternador de itens de árvore {
-  posição: relativa;
-  flutuar: var(--inline-start);
-  altura: 0;
-  largura: 0;
-  cor: rgba(255, 255, 255, 0.5);
-}
-.treeItemToggler::antes {
-  inserção-embutida-final: 4px;
-  -webkit-mask-image: var(--treeitem-expanded-icon);
-          máscara-imagem: var(--treeitem-expanded-icon);
-}
-.treeItemToggler.treeItemsHidden::antes {
-  -webkit-mask-image: var(--treeitem-collapsed-icon);
-          máscara-imagem: var(--treeitem-collapsed-icon);
-  transformar: scaleX(var(--dir-factor));
-}
-.treeItemToggler.treeItemsOculto ~ .treeItems {
-  exibição: nenhuma;
-}
-
-.treeItem.selected > a {
-  cor de fundo: var(--treeitem-selected-bg-color);
-  cor: var(--treeitem-selected-color);
-}
-
-.treeItemToggler:passe o mouse,
-.treeItemToggler:passe o mouse + a,
-.treeItemToggler:passe o mouse ~ .treeItems,
-.treeItem > a:hover {
-  cor de fundo: var(--treeitem-bg-color);
-  background-clip: caixa de preenchimento;
-  raio da borda: 2px;
-  cor: var(--treeitem-hover-color);
-}
-
-.dialogButton {
-  largura: automático;
-  margem: 3px 4px 2px !importante;
-  preenchimento: 2px 11px;
-  cor: var(--cor-principal);
-  cor de fundo: var(--dialog-button-bg-color);
-  borda: var(--dialog-button-border) !importante;
-}
-
-diálogo {
-  margem: automático;
-  preenchimento: 15px;
-  espaçamento de borda: 4px;
-  cor: var(--cor-principal);
-  fonte: caixa de mensagem;
-  tamanho da fonte: 12px;
-  altura da linha: 14px;
-  cor de fundo: var(--doorhanger-bg-color);
-  borda: 1px sólido rgba(0, 0, 0, 0.5);
-  raio da borda: 4px;
-  caixa-sombra: 0 1px 4px rgba(0, 0, 0, 0.3);
-}
-diálogo::pano de fundo {
-  cor de fundo: rgba(0, 0, 0, 0.2);
-}
-
-diálogo > .row {
-  exibição: tabela-linha;
-}
-
-diálogo > .linha > * {
-  exibição: célula-tabela;
-}
-
-diálogo .toolbarField {
-  margem: 5px 0;
-}
-
-diálogo .separator {
-  exibir: bloco;
-  margem: 4px 0;
-  altura: 1px;
-  largura: 100%;
-  cor de fundo: var(--cor-separador);
-}
-
-diálogo .buttonRow {
-  alinhamento de texto: centralizar;
-  alinhamento vertical: meio;
-}
-
-diálogo :link {
-  cor: rgba(255, 255, 255, 1);
-}
-
-#senhaDialog {
-  alinhamento de texto: centralizar;
-}
-#passwordDialog .toolbarField {
-  largura: 200px;
-}
-
-#documentPropertiesDialog {
-  alinhamento de texto: esquerda;
-}
-#documentPropertiesDialog .row > * {
-  largura mínima: 100px;
-  alinhamento de texto: iniciar;
-}
-#documentPropertiesDialog .row > span {
-  largura: 125px;
-  quebra de linha: quebra de palavra;
-}
-#documentPropertiesDialog .row > p {
-  largura máxima: 225px;
-  quebra de linha: quebra de palavra;
-}
-#documentPropertiesDialog .buttonRow {
-  margem superior: 10px;
-}
-
-.pegue-na-panela-pegue {
-  cursor: pegue !importante;
-}
-.pegue-na-panela-pegue
-  *:não(entrada):não(área de texto):não(botão):não(selecionar):não(:link) {
-  cursor: herdar !importante;
-}
-.grab-to-pan-grab:ativo,
-.pegar-na-panela-agarrando {
-  cursor: pegando !importante;
-  posição: fixa;
-  fundo: rgba(0, 0, 0, 0);
-  exibir: bloco;
-  inserção: 0;
-  estouro: oculto;
-  z-index: 50000; /* deve ser maior que qualquer outra coisa em PDF.js! */
-}
-
-@página {
-  margem: 0;
-}
-
-#imprimirContainer {
-  exibição: nenhuma;
-}
-
-@media imprimir {
-  corpo {
-    fundo: rgba(0, 0, 0, 0) nenhum;
-  }
-  corpo[data-pdfjsprinting] #outerContainer {
-    exibição: nenhuma;
-  }
-  corpo[data-pdfjsprinting] #printContainer {
-    exibir: bloco;
-  }
-  #imprimirContainer {
-    altura: 100%;
-  }
-  /* wrapper em torno de elementos de tela de impressão (dimensionados) */
-  #printContainer > .printedPage {
-    quebra-de-página-após: sempre;
-    quebra-de-página-interna: evitar;
-
-    /* O wrapper sempre cobre a página inteira. */
-    altura: 100%;
-    largura: 100%;
-
-    exibição: flexível;
-    flex-direction: coluna;
-    justificar-conteúdo: centro;
-    alinhar-itens: centro;
-  }
-
-  #printContainer > .xfaPrintedPage .xfaPage {
-    posição: absoluta;
-  }
-
-  #printContainer > .xfaPrintedPage {
-    quebra-de-página-após: sempre;
-    quebra-de-página-interna: evitar;
-    largura: 100%;
-    altura: 100%;
-    posição: relativa;
-  }
-
-  #printContainer > .printedPage :is(tela, img) {
-    /* O tamanho intrínseco da tela/imagem garantirá que nos ajustemos à página. */
-    largura máxima: 100%;
-    altura máxima: 100%;
-
-    direção: ltr;
-    exibir: bloco;
-  }
-}
-
-.visívelLargeView,
-.visívelMediumView {
-  exibição: nenhuma;
-}
-
-@media all e (largura máxima: 900px) {
-  #toolbarViewerMiddle {
-    exibição: tabela;
-    margem: automático;
-    esquerda: automático;
-    posição: herdar;
-    transformar: nenhum;
-  }
-}
-
-@media all e (largura máxima: 840px) {
-  #barralateralContainer {
-    cor de fundo: var(--sidebar-narrow-bg-color);
-  }
-  #outerContainer.sidebarAbrir #viewerContainer {
-    inset-inline-start: 0 !importante;
-  }
-}
-
-@media all e (largura máxima: 820px) {
-  #outerContainer .hiddenLargeView {
-    exibição: nenhuma;
-  }
-  #outerContainer .visibleLargeView {
-    exibir: herdar;
-  }
-}
-
-@media all e (largura máxima: 750px) {
-  #outerContainer .hiddenMediumView {
-    exibição: nenhuma;
-  }
-  #outerContainer .visibleMediumView {
-    exibir: herdar;
-  }
-}
-
-@media all e (largura máxima: 690px) {
-  .visãopequenaooculta,
-  .hiddenSmallView * {
-    exibição: nenhuma;
-  }
-  .barra de ferramentasButtonSpacer {
-    largura: 0;
-  }
-  .barra de localização {
-    inserção-em-linha-início: 34px;
-  }
-}
-
-@media all e (largura máxima: 560px) {
-  #scaleSelectContainer {
-    exibição: nenhuma;
-  }
-}
+﻿<!DOCTYPE html>
+<!--
+Copyright 2012 Mozilla Foundation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Adobe CMap resources are covered by their own copyright but the same license:
+
+    Copyright 1990-2015 Adobe Systems Incorporated.
+
+See https://github.com/adobe-type-tools/cmap-resources
+-->
+<html dir="ltr" mozdisallowselectionprint>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="google" content="notranslate">
+    <title>PDF.js viewer</title>
+
+<!-- This snippet is used in production (included from viewer.html) -->
+<link rel="resource" type="application/l10n" href="locale/locale.json">
+<script src="../build/pdf.mjs" type="module"></script>
+
+    <link rel="stylesheet" href="viewer.css">
+
+  <script src="viewer.mjs" type="module"></script>
+  </head>
+
+  <body tabindex="0">
+    <div id="outerContainer">
+
+      <div id="sidebarContainer">
+        <div id="toolbarSidebar" class="toolbarHorizontalGroup">
+          <div id="toolbarSidebarLeft">
+            <div id="sidebarViewButtons" class="toolbarHorizontalGroup toggled" role="radiogroup">
+              <button id="viewThumbnail" class="toolbarButton toggled" type="button" title="Show Thumbnails" tabindex="0" data-l10n-id="pdfjs-thumbs-button" role="radio" aria-checked="true" aria-controls="thumbnailView">
+                 <span data-l10n-id="pdfjs-thumbs-button-label">Thumbnails</span>
+              </button>
+              <button id="viewOutline" class="toolbarButton" type="button" title="Show Document Outline (double-click to expand/collapse all items)" tabindex="0" data-l10n-id="pdfjs-document-outline-button" role="radio" aria-checked="false" aria-controls="outlineView">
+                 <span data-l10n-id="pdfjs-document-outline-button-label">Document Outline</span>
+              </button>
+              <button id="viewAttachments" class="toolbarButton" type="button" title="Show Attachments" tabindex="0" data-l10n-id="pdfjs-attachments-button" role="radio" aria-checked="false" aria-controls="attachmentsView">
+                 <span data-l10n-id="pdfjs-attachments-button-label">Attachments</span>
+              </button>
+              <button id="viewLayers" class="toolbarButton" type="button" title="Show Layers (double-click to reset all layers to the default state)" tabindex="0" data-l10n-id="pdfjs-layers-button" role="radio" aria-checked="false" aria-controls="layersView">
+                 <span data-l10n-id="pdfjs-layers-button-label">Layers</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="toolbarSidebarRight">
+            <div id="outlineOptionsContainer" class="toolbarHorizontalGroup">
+              <div class="verticalToolbarSeparator"></div>
+
+              <button id="currentOutlineItem" class="toolbarButton" type="button" disabled="disabled" title="Find Current Outline Item" tabindex="0" data-l10n-id="pdfjs-current-outline-item-button">
+                <span data-l10n-id="pdfjs-current-outline-item-button-label">Current Outline Item</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div id="sidebarContent">
+          <div id="thumbnailView">
+          </div>
+          <div id="outlineView" class="hidden">
+          </div>
+          <div id="attachmentsView" class="hidden">
+          </div>
+          <div id="layersView" class="hidden">
+          </div>
+        </div>
+        <div id="sidebarResizer"></div>
+      </div>  <!-- sidebarContainer -->
+
+      <div id="mainContainer">
+        <div class="toolbar">
+          <div id="toolbarContainer">
+            <div id="toolbarViewer" class="toolbarHorizontalGroup">
+              <div id="toolbarViewerLeft" class="toolbarHorizontalGroup">
+                <button id="sidebarToggleButton" class="toolbarButton" type="button" title="Toggle Sidebar" tabindex="0" data-l10n-id="pdfjs-toggle-sidebar-button" aria-expanded="false" aria-haspopup="true" aria-controls="sidebarContainer">
+                  <span data-l10n-id="pdfjs-toggle-sidebar-button-label">Toggle Sidebar</span>
+                </button>
+                <div class="toolbarButtonSpacer"></div>
+                <div class="toolbarButtonWithContainer">
+                  <button id="viewFindButton" class="toolbarButton" type="button" title="Find in Document" tabindex="0" data-l10n-id="pdfjs-findbar-button" aria-expanded="false" aria-controls="findbar">
+                    <span data-l10n-id="pdfjs-findbar-button-label">Find</span>
+                  </button>
+                  <div class="hidden doorHanger toolbarHorizontalGroup" id="findbar">
+                    <div id="findInputContainer" class="toolbarHorizontalGroup">
+                      <span class="loadingInput end toolbarHorizontalGroup">
+                        <input id="findInput" class="toolbarField" title="Find" placeholder="Find in document…" tabindex="0" data-l10n-id="pdfjs-find-input" aria-invalid="false">
+                      </span>
+                      <div class="toolbarHorizontalGroup">
+                        <button id="findPreviousButton" class="toolbarButton" type="button" title="Find the previous occurrence of the phrase" tabindex="0" data-l10n-id="pdfjs-find-previous-button">
+                          <span data-l10n-id="pdfjs-find-previous-button-label">Previous</span>
+                        </button>
+                        <div class="splitToolbarButtonSeparator"></div>
+                        <button id="findNextButton" class="toolbarButton" type="button" title="Find the next occurrence of the phrase" tabindex="0" data-l10n-id="pdfjs-find-next-button">
+                          <span data-l10n-id="pdfjs-find-next-button-label">Next</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div id="findbarOptionsOneContainer" class="toolbarHorizontalGroup">
+                      <div class="toggleButton toolbarLabel">
+                        <input type="checkbox" id="findHighlightAll" tabindex="0" />
+                        <label for="findHighlightAll" data-l10n-id="pdfjs-find-highlight-checkbox">Highlight All</label>
+                      </div>
+                      <div class="toggleButton toolbarLabel">
+                        <input type="checkbox" id="findMatchCase" tabindex="0" />
+                        <label for="findMatchCase" data-l10n-id="pdfjs-find-match-case-checkbox-label">Match Case</label>
+                      </div>
+                    </div>
+                    <div id="findbarOptionsTwoContainer" class="toolbarHorizontalGroup">
+                      <div class="toggleButton toolbarLabel">
+                        <input type="checkbox" id="findMatchDiacritics" tabindex="0" />
+                        <label for="findMatchDiacritics" data-l10n-id="pdfjs-find-match-diacritics-checkbox-label">Match Diacritics</label>
+                      </div>
+                      <div class="toggleButton toolbarLabel">
+                        <input type="checkbox" id="findEntireWord" tabindex="0" />
+                        <label for="findEntireWord" data-l10n-id="pdfjs-find-entire-word-checkbox-label">Whole Words</label>
+                      </div>
+                    </div>
+
+                    <div id="findbarMessageContainer" class="toolbarHorizontalGroup" aria-live="polite">
+                      <span id="findResultsCount" class="toolbarLabel"></span>
+                      <span id="findMsg" class="toolbarLabel"></span>
+                    </div>
+                  </div>  <!-- findbar -->
+                </div>
+                <div class="toolbarHorizontalGroup hiddenSmallView">
+                  <button class="toolbarButton" title="Previous Page" type="button" id="previous" tabindex="0" data-l10n-id="pdfjs-previous-button">
+                    <span data-l10n-id="pdfjs-previous-button-label">Previous</span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button class="toolbarButton" type="button" title="Next Page" id="next" tabindex="0" data-l10n-id="pdfjs-next-button">
+                    <span data-l10n-id="pdfjs-next-button-label">Next</span>
+                  </button>
+                </div>
+                <div class="toolbarHorizontalGroup">
+                  <span class="loadingInput start toolbarHorizontalGroup">
+                    <input type="number" id="pageNumber" class="toolbarField" title="Page" value="1" min="1" tabindex="0" data-l10n-id="pdfjs-page-input" autocomplete="off">
+                  </span>
+                  <span id="numPages" class="toolbarLabel"></span>
+                </div>
+              </div>
+              <div id="toolbarViewerMiddle" class="toolbarHorizontalGroup">
+                <div class="toolbarHorizontalGroup">
+                  <button id="zoomOutButton" class="toolbarButton" type="button" title="Zoom Out" tabindex="0" data-l10n-id="pdfjs-zoom-out-button">
+                    <span data-l10n-id="pdfjs-zoom-out-button-label">Zoom Out</span>
+                  </button>
+                  <div class="splitToolbarButtonSeparator"></div>
+                  <button id="zoomInButton" class="toolbarButton" type="button" title="Zoom In" tabindex="0" data-l10n-id="pdfjs-zoom-in-button">
+                    <span data-l10n-id="pdfjs-zoom-in-button-label">Zoom In</span>
+                  </button>
+                </div>
+                <span id="scaleSelectContainer" class="dropdownToolbarButton">
+                  <select id="scaleSelect" title="Zoom" tabindex="0" data-l10n-id="pdfjs-zoom-select">
+                    <option id="pageAutoOption" title="" value="auto" selected="selected" data-l10n-id="pdfjs-page-scale-auto">Automatic Zoom</option>
+                    <option id="pageActualOption" title="" value="page-actual" data-l10n-id="pdfjs-page-scale-actual">Actual Size</option>
+                    <option id="pageFitOption" title="" value="page-fit" data-l10n-id="pdfjs-page-scale-fit">Page Fit</option>
+                    <option id="pageWidthOption" title="" value="page-width" data-l10n-id="pdfjs-page-scale-width">Page Width</option>
+                    <option id="customScaleOption" title="" value="custom" disabled="disabled" hidden="true" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 0 }'>0%</option>
+                    <option title="" value="0.5" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 50 }'>50%</option>
+                    <option title="" value="0.75" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 75 }'>75%</option>
+                    <option title="" value="1" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 100 }'>100%</option>
+                    <option title="" value="1.25" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 125 }'>125%</option>
+                    <option title="" value="1.5" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 150 }'>150%</option>
+                    <option title="" value="2" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 200 }'>200%</option>
+                    <option title="" value="3" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 300 }'>300%</option>
+                    <option title="" value="4" data-l10n-id="pdfjs-page-scale-percent" data-l10n-args='{ "scale": 400 }'>400%</option>
+                  </select>
+                </span>
+              </div>
+              <div id="toolbarViewerRight" class="toolbarHorizontalGroup">
+                <div id="editorModeButtons" class="toolbarHorizontalGroup" role="radiogroup">
+                  <div id="editorHighlight" class="toolbarButtonWithContainer">
+                    <button id="editorHighlightButton" class="toolbarButton" type="button" disabled="disabled" title="Highlight" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorHighlightParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-highlight-button">
+                      <span data-l10n-id="pdfjs-editor-highlight-button-label">Highlight</span>
+                    </button>
+                    <div class="editorParamsToolbar hidden doorHangerRight" id="editorHighlightParamsToolbar">
+                      <div id="highlightParamsToolbarContainer" class="editorParamsToolbarContainer">
+                        <div id="editorHighlightColorPicker" class="colorPicker">
+                          <span id="highlightColorPickerLabel" class="editorParamsLabel" data-l10n-id="pdfjs-editor-highlight-colorpicker-label">Highlight color</span>
+                        </div>
+                        <div id="editorHighlightThickness">
+                          <label for="editorFreeHighlightThickness" class="editorParamsLabel" data-l10n-id="pdfjs-editor-free-highlight-thickness-input">Thickness</label>
+                          <div class="thicknessPicker">
+                            <input type="range" id="editorFreeHighlightThickness" class="editorParamsSlider" data-l10n-id="pdfjs-editor-free-highlight-thickness-title" value="12" min="8" max="24" step="1" tabindex="0">
+                          </div>
+                        </div>
+                        <div id="editorHighlightVisibility">
+                          <div class="divider"></div>
+                          <div class="toggler">
+                            <label for="editorHighlightShowAll" class="editorParamsLabel" data-l10n-id="pdfjs-editor-highlight-show-all-button-label">Show all</label>
+                            <button id="editorHighlightShowAll" class="toggle-button" type="button" data-l10n-id="pdfjs-editor-highlight-show-all-button" aria-pressed="true" tabindex="0"></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="editorFreeText" class="toolbarButtonWithContainer">
+                    <button id="editorFreeTextButton" class="toolbarButton" type="button" disabled="disabled" title="Text" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorFreeTextParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-free-text-button">
+                      <span data-l10n-id="pdfjs-editor-free-text-button-label">Text</span>
+                    </button>
+                    <div class="editorParamsToolbar hidden doorHangerRight" id="editorFreeTextParamsToolbar">
+                      <div class="editorParamsToolbarContainer">
+                        <div class="editorParamsSetter">
+                          <label for="editorFreeTextColor" class="editorParamsLabel" data-l10n-id="pdfjs-editor-free-text-color-input">Color</label>
+                          <input type="color" id="editorFreeTextColor" class="editorParamsColor" tabindex="0">
+                        </div>
+                        <div class="editorParamsSetter">
+                          <label for="editorFreeTextFontSize" class="editorParamsLabel" data-l10n-id="pdfjs-editor-free-text-size-input">Size</label>
+                          <input type="range" id="editorFreeTextFontSize" class="editorParamsSlider" value="10" min="5" max="100" step="1" tabindex="0">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="editorInk" class="toolbarButtonWithContainer">
+                    <button id="editorInkButton" class="toolbarButton" type="button" disabled="disabled" title="Draw" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorInkParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-ink-button">
+                      <span data-l10n-id="pdfjs-editor-ink-button-label">Draw</span>
+                    </button>
+                    <div class="editorParamsToolbar hidden doorHangerRight" id="editorInkParamsToolbar">
+                      <div class="editorParamsToolbarContainer">
+                        <div class="editorParamsSetter">
+                          <label for="editorInkColor" class="editorParamsLabel" data-l10n-id="pdfjs-editor-ink-color-input">Color</label>
+                          <input type="color" id="editorInkColor" class="editorParamsColor" tabindex="0">
+                        </div>
+                        <div class="editorParamsSetter">
+                          <label for="editorInkThickness" class="editorParamsLabel" data-l10n-id="pdfjs-editor-ink-thickness-input">Thickness</label>
+                          <input type="range" id="editorInkThickness" class="editorParamsSlider" value="1" min="1" max="20" step="1" tabindex="0">
+                        </div>
+                        <div class="editorParamsSetter">
+                          <label for="editorInkOpacity" class="editorParamsLabel" data-l10n-id="pdfjs-editor-ink-opacity-input">Opacity</label>
+                          <input type="range" id="editorInkOpacity" class="editorParamsSlider" value="1" min="0.05" max="1" step="0.05" tabindex="0">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="editorStamp" class="toolbarButtonWithContainer">
+                    <button id="editorStampButton" class="toolbarButton" type="button" disabled="disabled" title="Add or edit images" role="radio" aria-expanded="false" aria-haspopup="true" aria-controls="editorStampParamsToolbar" tabindex="0" data-l10n-id="pdfjs-editor-stamp-button">
+                      <span data-l10n-id="pdfjs-editor-stamp-button-label">Add or edit images</span>
+                    </button>
+                    <div class="editorParamsToolbar hidden doorHangerRight menu" id="editorStampParamsToolbar">
+                      <div class="menuContainer">
+                        <button id="editorStampAddImage" class="toolbarButton labeled" type="button" title="Add image" tabindex="0" data-l10n-id="pdfjs-editor-stamp-add-image-button">
+                          <span class="editorParamsLabel" data-l10n-id="pdfjs-editor-stamp-add-image-button-label">Add image</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="editorModeSeparator" class="verticalToolbarSeparator"></div>
+
+                <div class="toolbarHorizontalGroup hiddenMediumView">
+                  <button id="printButton" class="toolbarButton" type="button" title="Print" tabindex="0" data-l10n-id="pdfjs-print-button">
+                    <span data-l10n-id="pdfjs-print-button-label">Print</span>
+                  </button>
+
+                  <button id="downloadButton" class="toolbarButton" type="button" title="Save" tabindex="0" data-l10n-id="pdfjs-save-button">
+                    <span data-l10n-id="pdfjs-save-button-label">Save</span>
+                  </button>
+                </div>
+
+                <div class="verticalToolbarSeparator hiddenMediumView"></div>
+
+                <div id="secondaryToolbarToggle" class="toolbarButtonWithContainer">
+                  <button id="secondaryToolbarToggleButton" class="toolbarButton" type="button" title="Tools" tabindex="0" data-l10n-id="pdfjs-tools-button" aria-expanded="false" aria-haspopup="true" aria-controls="secondaryToolbar">
+                    <span data-l10n-id="pdfjs-tools-button-label">Tools</span>
+                  </button>
+                  
+
+                      <div class="horizontalToolbarSeparator"></div>
+
+                      <button id="pageRotateCw" class="toolbarButton labeled" type="button" title="Rotate Clockwise" tabindex="0" data-l10n-id="pdfjs-page-rotate-cw-button">
+                        <span data-l10n-id="pdfjs-page-rotate-cw-button-label">Rotate Clockwise</span>
+                      </button>
+                      <button id="pageRotateCcw" class="toolbarButton labeled" type="button" title="Rotate Counterclockwise" tabindex="0" data-l10n-id="pdfjs-page-rotate-ccw-button">
+                        <span data-l10n-id="pdfjs-page-rotate-ccw-button-label">Rotate Counterclockwise</span>
+                      </button>
+
+                      <div class="horizontalToolbarSeparator"></div>
+
+                      <div id="cursorToolButtons" role="radiogroup">
+                        <button id="cursorSelectTool" class="toolbarButton labeled toggled" type="button" title="Enable Text Selection Tool" tabindex="0" data-l10n-id="pdfjs-cursor-text-select-tool-button" role="radio" aria-checked="true">
+                          <span data-l10n-id="pdfjs-cursor-text-select-tool-button-label">Text Selection Tool</span>
+                        </button>
+                        <button id="cursorHandTool" class="toolbarButton labeled" type="button" title="Enable Hand Tool" tabindex="0" data-l10n-id="pdfjs-cursor-hand-tool-button" role="radio" aria-checked="false">
+                          <span data-l10n-id="pdfjs-cursor-hand-tool-button-label">Hand Tool</span>
+                        </button>
+                      </div>
+
+                      
+                  </div>  <!-- secondaryToolbar -->
+                </div>
+              </div>
+            </div>
+            <div id="loadingBar">
+              <div class="progress">
+                <div class="glimmer">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="viewerContainer" tabindex="0">
+          <div id="viewer" class="pdfViewer"></div>
+        </div>
+      </div> <!-- mainContainer -->
+
+      <div id="dialogContainer">
+        <dialog id="passwordDialog">
+          <div class="row">
+            <label for="password" id="passwordText" data-l10n-id="pdfjs-password-label">Enter the password to open this PDF file:</label>
+          </div>
+          <div class="row">
+            <input type="password" id="password" class="toolbarField">
+          </div>
+          <div class="buttonRow">
+            <button id="passwordCancel" class="dialogButton" type="button"><span data-l10n-id="pdfjs-password-cancel-button">Cancel</span></button>
+            <button id="passwordSubmit" class="dialogButton" type="button"><span data-l10n-id="pdfjs-password-ok-button">OK</span></button>
+          </div>
+        </dialog>
+        <dialog id="documentPropertiesDialog">
+          <div class="row">
+            <span id="fileNameLabel" data-l10n-id="pdfjs-document-properties-file-name">File name:</span>
+            <p id="fileNameField" aria-labelledby="fileNameLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="fileSizeLabel" data-l10n-id="pdfjs-document-properties-file-size">File size:</span>
+            <p id="fileSizeField" aria-labelledby="fileSizeLabel">-</p>
+          </div>
+          <div class="separator"></div>
+          <div class="row">
+            <span id="titleLabel" data-l10n-id="pdfjs-document-properties-title">Title:</span>
+            <p id="titleField" aria-labelledby="titleLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="authorLabel" data-l10n-id="pdfjs-document-properties-author">Author:</span>
+            <p id="authorField" aria-labelledby="authorLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="subjectLabel" data-l10n-id="pdfjs-document-properties-subject">Subject:</span>
+            <p id="subjectField" aria-labelledby="subjectLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="keywordsLabel" data-l10n-id="pdfjs-document-properties-keywords">Keywords:</span>
+            <p id="keywordsField" aria-labelledby="keywordsLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="creationDateLabel" data-l10n-id="pdfjs-document-properties-creation-date">Creation Date:</span>
+            <p id="creationDateField" aria-labelledby="creationDateLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="modificationDateLabel" data-l10n-id="pdfjs-document-properties-modification-date">Modification Date:</span>
+            <p id="modificationDateField" aria-labelledby="modificationDateLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="creatorLabel" data-l10n-id="pdfjs-document-properties-creator">Creator:</span>
+            <p id="creatorField" aria-labelledby="creatorLabel">-</p>
+          </div>
+          <div class="separator"></div>
+          <div class="row">
+            <span id="producerLabel" data-l10n-id="pdfjs-document-properties-producer">PDF Producer:</span>
+            <p id="producerField" aria-labelledby="producerLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="versionLabel" data-l10n-id="pdfjs-document-properties-version">PDF Version:</span>
+            <p id="versionField" aria-labelledby="versionLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="pageCountLabel" data-l10n-id="pdfjs-document-properties-page-count">Page Count:</span>
+            <p id="pageCountField" aria-labelledby="pageCountLabel">-</p>
+          </div>
+          <div class="row">
+            <span id="pageSizeLabel" data-l10n-id="pdfjs-document-properties-page-size">Page Size:</span>
+            <p id="pageSizeField" aria-labelledby="pageSizeLabel">-</p>
+          </div>
+          <div class="separator"></div>
+          <div class="row">
+            <span id="linearizedLabel" data-l10n-id="pdfjs-document-properties-linearized">Fast Web View:</span>
+            <p id="linearizedField" aria-labelledby="linearizedLabel">-</p>
+          </div>
+          <div class="buttonRow">
+            <button id="documentPropertiesClose" class="dialogButton" type="button"><span data-l10n-id="pdfjs-document-properties-close-button">Close</span></button>
+          </div>
+        </dialog>
+        <dialog class="dialog altText" id="altTextDialog" aria-labelledby="dialogLabel" aria-describedby="dialogDescription">
+          <div id="altTextContainer" class="mainContainer">
+            <div id="overallDescription">
+              <span id="dialogLabel" data-l10n-id="pdfjs-editor-alt-text-dialog-label" class="title">Choose an option</span>
+              <span id="dialogDescription" data-l10n-id="pdfjs-editor-alt-text-dialog-description">
+                Alt text (alternative text) helps when people can’t see the image or when it doesn’t load.
+              </span>
+            </div>
+            <div id="addDescription">
+              <div class="radio">
+                <div class="radioButton">
+                  <input type="radio" id="descriptionButton" name="altTextOption" tabindex="0" aria-describedby="descriptionAreaLabel" checked>
+                  <label for="descriptionButton" data-l10n-id="pdfjs-editor-alt-text-add-description-label">Add a description</label>
+                </div>
+                <div class="radioLabel">
+                  <span id="descriptionAreaLabel" data-l10n-id="pdfjs-editor-alt-text-add-description-description">
+                    Aim for 1-2 sentences that describe the subject, setting, or actions.
+                  </span>
+                </div>
+              </div>
+              <div class="descriptionArea">
+                <textarea id="descriptionTextarea" placeholder="For example, “A young man sits down at a table to eat a meal”" aria-labelledby="descriptionAreaLabel" data-l10n-id="pdfjs-editor-alt-text-textarea" tabindex="0"></textarea>
+              </div>
+            </div>
+            <div id="markAsDecorative">
+              <div class="radio">
+                <div class="radioButton">
+                  <input type="radio" id="decorativeButton" name="altTextOption" aria-describedby="decorativeLabel">
+                  <label for="decorativeButton" data-l10n-id="pdfjs-editor-alt-text-mark-decorative-label">Mark as decorative</label>
+                </div>
+                <div class="radioLabel">
+                  <span id="decorativeLabel" data-l10n-id="pdfjs-editor-alt-text-mark-decorative-description">
+                    This is used for ornamental images, like borders or watermarks.
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div id="buttons">
+              <button id="altTextCancel" class="secondaryButton" type="button" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-cancel-button">Cancel</span></button>
+              <button id="altTextSave" class="primaryButton" type="button" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-save-button">Save</span></button>
+            </div>
+          </div>
+        </dialog>
+        <dialog class="dialog newAltText" id="newAltTextDialog" aria-labelledby="newAltTextTitle" aria-describedby="newAltTextDescription" tabindex="0">
+          <div id="newAltTextContainer" class="mainContainer">
+            <div class="title">
+              <span id="newAltTextTitle" data-l10n-id="pdfjs-editor-new-alt-text-dialog-edit-label" role="sectionhead" tabindex="0">Edit alt text (image description)</span>
+            </div>
+            <div id="mainContent">
+              <div id="descriptionAndSettings">
+                <div id="descriptionInstruction">
+                  <div id="newAltTextDescriptionContainer">
+                    <div class="altTextSpinner" role="status" aria-live="polite"></div>
+                    <textarea id="newAltTextDescriptionTextarea" placeholder="Write your description here…" aria-labelledby="descriptionAreaLabel" data-l10n-id="pdfjs-editor-new-alt-text-textarea" tabindex="0"></textarea>
+                  </div>
+                  <span id="newAltTextDescription" role="note" data-l10n-id="pdfjs-editor-new-alt-text-description">Short description for people who can’t see the image or when the image doesn’t load.</span>
+                  <div id="newAltTextDisclaimer" role="note"><div><span data-l10n-id="pdfjs-editor-new-alt-text-disclaimer1">This alt text was created automatically and may be inaccurate.</span> <a href="https://support.mozilla.org/en-US/kb/pdf-alt-text" target="_blank" rel="noopener noreferrer" id="newAltTextLearnMore" data-l10n-id="pdfjs-editor-new-alt-text-disclaimer-learn-more-url" tabindex="0">Learn more</a></div></div>
+                </div>
+                <div id="newAltTextCreateAutomatically" class="toggler">
+                  <button id="newAltTextCreateAutomaticallyButton" class="toggle-button" type="button" aria-pressed="true" tabindex="0"></button>
+                  <label for="newAltTextCreateAutomaticallyButton" class="togglerLabel" data-l10n-id="pdfjs-editor-new-alt-text-create-automatically-button-label">Create alt text automatically</label>
+                </div>
+                <div id="newAltTextDownloadModel" class="hidden">
+                  <span id="newAltTextDownloadModelDescription" data-l10n-id="pdfjs-editor-new-alt-text-ai-model-downloading-progress" aria-valuemin="0" data-l10n-args='{ "totalSize": 0, "downloadedSize": 0 }'>Downloading alt text AI model (0 of 0 MB)</span>
+                </div>
+              </div>
+              <div id="newAltTextImagePreview"></div>
+            </div>
+            <div id="newAltTextError" class="messageBar">
+              <div>
+                <div>
+                  <span class="title" data-l10n-id="pdfjs-editor-new-alt-text-error-title">Couldn’t create alt text automatically</span>
+                  <span  class="description" data-l10n-id="pdfjs-editor-new-alt-text-error-description">Please write your own alt text or try again later.</span>
+                </div>
+                <button id="newAltTextCloseButton" class="closeButton" type="button" tabindex="0" title="Close"><span data-l10n-id="pdfjs-editor-new-alt-text-error-close-button">Close</span></button>
+              </div>
+            </div>
+            <div id="newAltTextButtons" class="dialogButtonsGroup">
+              <button id="newAltTextCancel" type="button" class="secondaryButton hidden" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-cancel-button">Cancel</span></button>
+              <button id="newAltTextNotNow" type="button" class="secondaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-new-alt-text-not-now-button">Not now</span></button>
+              <button id="newAltTextSave" type="button" class="primaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-save-button">Save</span></button>
+            </div>
+          </div>
+        </dialog>
+
+        <dialog class="dialog" id="altTextSettingsDialog" aria-labelledby="altTextSettingsTitle">
+          <div id="altTextSettingsContainer" class="mainContainer">
+            <div class="title">
+              <span id="altTextSettingsTitle" data-l10n-id="pdfjs-editor-alt-text-settings-dialog-label" role="sectionhead" tabindex="0" class="title">Image alt text settings</span>
+            </div>
+            <div id="automaticAltText">
+              <span data-l10n-id="pdfjs-editor-alt-text-settings-automatic-title">Automatic alt text</span>
+              <div id="automaticSettings">
+                <div id="createModelSetting">
+                  <div class="toggler">
+                    <button id="createModelButton" type="button" class="toggle-button" aria-pressed="true" tabindex="0"></button>
+                    <label for="createModelButton" class="togglerLabel" data-l10n-id="pdfjs-editor-alt-text-settings-create-model-button-label">Create alt text automatically</label>
+                  </div>
+                  <div id="createModelDescription" class="description">
+                    <span data-l10n-id="pdfjs-editor-alt-text-settings-create-model-description">Suggests descriptions to help people who can’t see the image or when the image doesn’t load.</span> <a href="https://support.mozilla.org/en-US/kb/pdf-alt-text" target="_blank" rel="noopener noreferrer" id="altTextSettingsLearnMore" data-l10n-id="pdfjs-editor-new-alt-text-disclaimer-learn-more-url" tabindex="0">Learn more</a>
+                  </div>
+                </div>
+                <div id="aiModelSettings">
+                  <div>
+                    <span data-l10n-id="pdfjs-editor-alt-text-settings-download-model-label" data-l10n-args='{ "totalSize": 180 }'>Alt text AI model (180MB)</span>
+                    <div id="aiModelDescription" class="description">
+                      <span data-l10n-id="pdfjs-editor-alt-text-settings-ai-model-description">Runs locally on your device so your data stays private. Required for automatic alt text.</span>
+                    </div>
+                  </div>
+                  <button id="deleteModelButton" type="button" class="secondaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-settings-delete-model-button">Delete</span></button>
+                  <button id="downloadModelButton" type="button" class="secondaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-settings-download-model-button">Download</span></button>
+                </div>
+              </div>
+            </div>
+            <div class="dialogSeparator"></div>
+            <div id="altTextEditor">
+              <span data-l10n-id="pdfjs-editor-alt-text-settings-editor-title">Alt text editor</span>
+              <div id="showAltTextEditor">
+                <div class="toggler">
+                  <button id="showAltTextDialogButton" type="button" class="toggle-button" aria-pressed="true" tabindex="0"></button>
+                  <label for="showAltTextDialogButton" class="togglerLabel" data-l10n-id="pdfjs-editor-alt-text-settings-show-dialog-button-label">Show alt text editor right away when adding an image</label>
+                </div>
+                <div id="showAltTextDialogDescription" class="description">
+                  <span data-l10n-id="pdfjs-editor-alt-text-settings-show-dialog-description">Helps you make sure all your images have alt text.</span>
+                </div>
+              </div>
+            </div>
+            <div id="buttons" class="dialogButtonsGroup">
+              <button id="altTextSettingsCloseButton" type="button" class="primaryButton" tabindex="0"><span data-l10n-id="pdfjs-editor-alt-text-settings-close-button">Close</span></button>
+            </div>
+          </div>
+        </dialog>
+        <dialog id="printServiceDialog" style="min-width: 200px;">
+          <div class="row">
+            <span data-l10n-id="pdfjs-print-progress-message">Preparing document for printing…</span>
+          </div>
+          <div class="row">
+            <progress value="0" max="100"></progress>
+            <span data-l10n-id="pdfjs-print-progress-percent" data-l10n-args='{ "progress": 0 }' class="relative-progress">0%</span>
+          </div>
+          <div class="buttonRow">
+            <button id="printCancel" class="dialogButton" type="button"><span data-l10n-id="pdfjs-print-progress-close-button">Cancel</span></button>
+          </div>
+        </dialog>
+      </div>  <!-- dialogContainer -->
+
+      <div id="editorUndoBar" class="messageBar" role="status" aria-labelledby="editorUndoBarMessage" tabindex="-1" hidden>
+        <div>
+          <div>
+            <span id="editorUndoBarMessage" class="description"></span>
+          </div>
+          <button id="editorUndoBarUndoButton" class="undoButton" type="button" tabindex="0" title="Undo" data-l10n-id="pdfjs-editor-undo-bar-undo-button">
+            <span data-l10n-id="pdfjs-editor-undo-bar-undo-button-label">Undo</span>
+          </button>
+          <button id="editorUndoBarCloseButton" class="closeButton" type="button" tabindex="0" title="Close" data-l10n-id="pdfjs-editor-undo-bar-close-button">
+            <span data-l10n-id="pdfjs-editor-undo-bar-close-button-label">Close</span>
+          </button>
+        </div>
+      </div> <!-- editorUndoBar -->
+
+    </div> <!-- outerContainer -->
+    <div id="printContainer"></div>
+  </body>
+</html>
